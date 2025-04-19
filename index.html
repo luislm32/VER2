@@ -134,7 +134,7 @@
   <div id="checklist" class="checklist"></div>
 
   <div class="botones">
-    <button onclick="Datos()"></button>
+    <button onclick="guardarDatos()">Guardar</button>
     <button onclick="limpiarFormulario()">Limpiar</button>
     <button onclick="mostrarImpresion()">Imprimir</button>
   </div>
@@ -311,38 +311,13 @@
       botonGuardar.textContent = "Guardando...";
       botonGuardar.disabled = true;
 
-      // ↓↓↓ COMIENZA EL NUEVO BLOQUE FETCH ↓↓↓
-  fetch("https://script.google.com/macros/s/AKfycbyd4JLLi3-63b05APoxEV6XTpoZaFPl2XBSD8uqUFkGbq8iiILmccQDsp3NTBZ1M4jhQQ/exec", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: { "Content-Type": "application/json" },
-    redirect: "follow",
-    mode: "no-cors" // ← ¡Nueva línea clave!
-  })
-  .then(response => {
-    if (!response.ok) throw new Error("Error en la red");
-    return response.text(); // Cambiado de json() a text()
-  })
-  .then(text => {
-    try {
-      const data = JSON.parse(text); // Intenta convertir la respuesta
-      if (data.success) {
-        alert("¡Guardado exitoso!");
-        limpiarFormulario(); // Opcional: limpia el formulario después
-      } else {
-        throw new Error(data.message || "Error en el servidor");
-      }
-    } catch {
-      // Si no es JSON válido (como en redirecciones de Google)
-      console.log("Respuesta del servidor:", text);
-      alert("Datos enviados al servidor. Verifica la hoja de cálculo.");
-    }
-  })
-  .catch(error => {
-    console.error("Error completo:", error);
-    alert("Error al guardar. Verifica:\n1. Tu conexión a internet\n2. La consola (F12) para detalles");
-  });
-  // ↑↑↑ FIN DEL NUEVO BLOQUE ↑↑↑
+      fetch("https://script.google.com/macros/s/AKfycbyd4JLLi3-63b05APoxEV6XTpoZaFPl2XBSD8uqUFkGbq8iiILmccQDsp3NTBZ1M4jhQQ/exec", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+        redirect: "follow",
+    mode: "no-cors" // ¡SOLUCIÓN CLAVE!
+      })
       .then(res => res.json())
       .then(response => {
         if (response.success) {
