@@ -134,7 +134,7 @@
   <div id="checklist" class="checklist"></div>
 
   <div class="botones">
-    <button onclick="guardarDatos()">Guardar</button>
+    <button onclick="Datos()"></button>
     <button onclick="limpiarFormulario()">Limpiar</button>
     <button onclick="mostrarImpresion()">Imprimir</button>
   </div>
@@ -314,7 +314,9 @@
       fetch("https://script.google.com/macros/s/AKfycbyd4JLLi3-63b05APoxEV6XTpoZaFPl2XBSD8uqUFkGbq8iiILmccQDsp3NTBZ1M4jhQQ/exec", {
         method: "POST",
         body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
+        redirect: "follow",
+    mode: "no-cors" // ¡SOLUCIÓN CLAVE!
       })
       .then(res => res.json())
       .then(response => {
