@@ -311,7 +311,7 @@
       botonGuardar.textContent = "Guardando...";
       botonGuardar.disabled = true;
 
-      fetch('https://script.google.com/macros/s/AKfycbxnil8UKrK2f6K3GTCUgNe9xi64kQH7mKC-poYRw5PvhqtlDsItfvLH-VGqE0_e79cBMg/exec', {
+      fetch("https://script.google.com/macros/s/AKfycbxnil8UKrK2f6K3GTCUgNe9xi64kQH7mKC-poYRw5PvhqtlDsItfvLH-VGqE0_e79cBMg/exec", {
         method: "POST",
         body: JSON.stringify(data),
         headers: { "Content-Type": "application/json" }
