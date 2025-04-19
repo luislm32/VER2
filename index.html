@@ -14,11 +14,15 @@
     .campo-texto { margin-top: 5px; display: block; }
     #resultadosImpresion { display: none; }
     .botones { margin-top: 20px; }
-    .imprimible { display: none; }
+    .imprimible { display: none; font-family: Arial, sans-serif; }
+    .imprimible h2 { text-align: center; margin-top: 0; }
+    .imprimible table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    .imprimible th, .imprimible td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    .imprimible th { background-color: #f0f0f0; }
     @media print {
       body * { visibility: hidden; }
       .imprimible, .imprimible * { visibility: visible; }
-      .imprimible { position: absolute; left: 0; top: 0; }
+      .imprimible { position: absolute; left: 0; top: 0; width: 100%; }
     }
   </style>
 </head>
@@ -57,7 +61,7 @@
   <div class="botones">
     <button onclick="guardarDatos()">Guardar</button>
     <button onclick="limpiarFormulario()">Limpiar</button>
-    <button onclick="window.print()">Imprimir</button>
+    <button onclick="mostrarImpresion()">Imprimir</button>
   </div>
 
   <div id="resultadosImpresion" class="imprimible"></div>
@@ -87,7 +91,7 @@
         "Tablero correctamente instalado",
         "El tablero se encuentra limpio y sin ningún daño",
         "Baquela Izq. pared de fuego correctamente instalada",
-        "Baquela Izq. poste A correctamente instalada  y sin daños",
+        "Baquela Izq. poste A correctamente instalada y sin daños",
         "Asiento Izq. libre de marcas o rayas",
         "Cinturón de seguridad Izq. en buen estado y funciona correctamente",
         "Consola palanca de velocidades sin daños",
@@ -160,8 +164,52 @@
     }
 
     function guardarDatos() {
+  const zona = document.getElementById("zona").value;
+  if (!zona) return alert("Selecciona una zona");
+  const actividades = [];
+  document.querySelectorAll(".actividad").forEach(act => {
+    const input = act.querySelector("input");
+    if (input) {
+      actividades.push({ actividad: input.dataset.actividad, respuesta: input.value });
+    } else {
+      const respuesta = act.querySelector(".respuesta");
+      const seleccion = respuesta?.getAttribute("data-seleccion") || "";
+      actividades.push({ actividad: respuesta.children[0].dataset.actividad, respuesta: seleccion });
+    }
+  });
+
+  const data = {
+    torre: document.getElementById("torre").value,
+    fecha: document.getElementById("fecha").value,
+    numero_revision: document.getElementById("numero_revision").value,
+    empleado: document.getElementById("empleado").value,
+    marca: document.getElementById("marca").value,
+    tipo: document.getElementById("tipo").value,
+    nivel: document.getElementById("nivel").value,
+    serie: document.getElementById("serie").value,
+    color: document.getElementById("color").value,
+    zona: zona,
+    actividades: actividades
+  };
+
+  fetch("https://script.google.com/macros/s/AKfycbwn8VTI5A4c9rr_8cDnR6q2yGyA8SPyH95fAFxMRw7ROpoUw7A6UHV-7mDMBnAaQyaC/exec", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(res => res.text())
+  .then(txt => alert("Guardado exitosamente"))
+  .catch(err => alert("Error al guardar: " + err));
+}
+
+    function limpiarFormulario() {
+      document.getElementById("formulario").reset();
+      document.getElementById("checklist").innerHTML = "";
+      document.getElementById("checklist").style.display = "none";
+    }
+
+    function mostrarImpresion() {
       const zona = document.getElementById("zona").value;
-      if (!zona) return alert("Selecciona una zona");
       const actividades = [];
       document.querySelectorAll(".actividad").forEach(act => {
         const input = act.querySelector("input");
@@ -174,7 +222,7 @@
         }
       });
 
-      const data = {
+      const datosCabecera = {
         torre: document.getElementById("torre").value,
         fecha: document.getElementById("fecha").value,
         numero_revision: document.getElementById("numero_revision").value,
@@ -184,24 +232,25 @@
         nivel: document.getElementById("nivel").value,
         serie: document.getElementById("serie").value,
         color: document.getElementById("color").value,
-        zona: zona,
-        actividades: actividades
+        zona: zona
       };
 
-      fetch("https://script.google.com/macros/s/AKfycby82xNiLWrVQPKFFxC-6JFK2n-bHgKV6uoyWHGuWwdmL9qnclB3KHXJhwiC33YjHeXr/exec", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(res => res.text())
-      .then(txt => alert("Guardado exitosamente"))
-      .catch(err => alert("Error al guardar"));
-    }
+      let html = `<h2>Reporte de Revisión - ${zona}</h2>`;
+      html += `<table><tbody>`;
+      for (let key in datosCabecera) {
+        html += `<tr><th>${key}</th><td>${datosCabecera[key]}</td></tr>`;
+      }
+      html += `</tbody></table>`;
 
-    function limpiarFormulario() {
-      document.getElementById("formulario").reset();
-      document.getElementById("checklist").innerHTML = "";
-      document.getElementById("checklist").style.display = "none";
+      html += `<h3>Resultados:</h3><table><tr><th>#</th><th>Actividad</th><th>Respuesta</th></tr>`;
+      actividades.forEach((a, i) => {
+        html += `<tr><td>${i + 1}</td><td>${a.actividad}</td><td>${a.respuesta}</td></tr>`;
+      });
+      html += `</table>`;
+
+      const contenedor = document.getElementById("resultadosImpresion");
+      contenedor.innerHTML = html;
+      window.print();
     }
   </script>
 </body>
