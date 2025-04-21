@@ -2,465 +2,153 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Checklist Entrega Final - Vehículo Blindado</title>
-  <style>
-	body { font-family: Arial, sans-serif; margin: 20px; }
-	h1 { color: #2c3e50; text-align: center; }
-	h2 { margin-top: 30px; color: #34495e; }
-	label { display: inline-block; width: 120px; font-weight: bold; margin-bottom: 5px; }
-	input, select {
-  	margin-bottom: 10px;
-  	padding: 8px;
-  	border: 1px solid #ddd;
-  	border-radius: 4px;
-  	width: 200px;
-	}
-	.checklist, .subzona { display: none; margin-top: 20px; }
-	.actividad {
-  	margin: 15px 0;
-  	padding: 10px;
-  	background-color: #f9f9f9;
-  	border-radius: 4px;
-  	border-left: 4px solid #3498db;
-	}
-	.respuesta button {
-  	margin-right: 5px;
-  	padding: 5px 10px;
-  	background-color: #ecf0f1;
-  	border: 1px solid #bdc3c7;
-  	border-radius: 3px;
-  	cursor: pointer;
-	}
-	.respuesta button:hover {
-  	background-color: #d6eaf8;
-	}
-	.campo-texto {
-  	margin-top: 5px;
-  	display: block;
-  	padding: 8px;
-  	width: 80%;
-  	border: 1px solid #ddd;
-  	border-radius: 4px;
-	}
-	#resultadosImpresion { display: none; }
-	.botones {
-  	margin-top: 20px;
-  	text-align: center;
-	}
-	.botones button {
-  	padding: 10px 20px;
-  	margin: 0 10px;
-  	background-color: #3498db;
-  	color: white;
-  	border: none;
-  	border-radius: 4px;
-  	cursor: pointer;
-  	font-size: 16px;
-	}
-	.botones button:hover {
-  	background-color: #2980b9;
-	}
-	.imprimible {
-  	display: none;
-  	font-family: Arial, sans-serif;
-  	margin: 20px;
-	}
-	.imprimible h2 { text-align: center; margin-top: 0; color: #2c3e50; }
-	.imprimible table {
-  	width: 100%;
-  	border-collapse: collapse;
-  	margin-top: 20px;
-  	box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-	}
-	.imprimible th, .imprimible td {
-  	border: 1px solid #ddd;
-  	padding: 12px;
-  	text-align: left;
-	}
-	.imprimible th {
-  	background-color: #3498db;
-  	color: white;
-	}
-	.imprimible tr:nth-child(even) {
-  	background-color: #f2f2f2;
-	}
-	@media print {
-  	body * { visibility: hidden; }
-  	.imprimible, .imprimible * { visibility: visible; }
-  	.imprimible {
-    	position: absolute;
-    	left: 0;
-    	top: 0;
-    	width: 100%;
-    	margin: 0;
-    	padding: 0;
-  	}
-  	.imprimible table {
-    	box-shadow: none;
-  	}
-	}
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checklist Vehículos Blindados</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
-  <h1>Checklist Entrega Final - Vehículo Blindado</h1>
-  <form id="formulario">
-	<label>Torre:</label><input type="text" id="torre" required><br>
-	<label>Fecha:</label><input type="date" id="fecha" required><br>
-	<label>N° Revisión:</label>
-	<select id="numero_revision" required>
-  	<option value="">Selecciona</option>
-  	<option value="1ª">1ª</option>
-  	<option value="2ª">2ª</option>
-  	<option value="3ª">3ª</option>
-	</select><br>
-	<label>Empleado:</label><input type="number" id="empleado" required><br>
-	<label>Marca:</label><input type="text" id="marca" required><br>
-	<label>Tipo:</label><input type="text" id="tipo" required><br>
-	<label>Nivel:</label><input type="text" id="nivel" required><br>
-	<label>Serie:</label><input type="text" id="serie" required><br>
-	<label>Color:</label><input type="text" id="color" required><br>
+<body class="bg-light">
+<div class="container py-4">
+  <h2 class="text-center text-primary mb-4">Checklist de Entrega Final - Vehículo Blindado</h2>
 
-	<label>Zona:</label>
-	<select id="zona" required>
-  	<option value="">Selecciona</option>
-  	<option value="EXTERIORES">Zona 1 - EXTERIORES</option>
-  	<option value="INTERIORES">Zona 2 - INTERIORES</option>
-  	<option value="ELECTRICO">Zona 3 - FUNCIONAMIENTO ELÉCTRICO</option>
-  	<option value="CARRETERA">Zona 4 - PRUEBA DE CARRETERA</option>
-  	<option value="AGUA">Zona 5 - PRUEBA DE AGUA / INTERIORES CIELO</option>
-	</select>
+  <form id="formulario">
+    <div class="row g-3">
+      <div class="col-md-3"><input type="text" id="torre" class="form-control" placeholder="Torre" required></div>
+      <div class="col-md-3"><input type="date" id="fecha" class="form-control" required></div>
+      <div class="col-md-3">
+        <select id="numero_revision" class="form-select" required>
+          <option value="">Nº Revisión</option>
+          <option value="1ª">1ª</option>
+          <option value="2ª">2ª</option>
+          <option value="3ª">3ª</option>
+        </select>
+      </div>
+      <div class="col-md-3"><input type="number" id="empleado" class="form-control" placeholder="Empleado" required></div>
+      <div class="col-md-3"><input type="text" id="marca" class="form-control" placeholder="Marca" required></div>
+      <div class="col-md-3"><input type="text" id="tipo" class="form-control" placeholder="Tipo" required></div>
+      <div class="col-md-3"><input type="text" id="nivel" class="form-control" placeholder="Nivel" required></div>
+      <div class="col-md-3"><input type="text" id="serie" class="form-control" placeholder="Serie" required></div>
+      <div class="col-md-3"><input type="text" id="color" class="form-control" placeholder="Color" required></div>
+    </div>
+
+    <div class="mt-4">
+      <label for="zona" class="form-label">Zona</label>
+      <select id="zona" class="form-select" required>
+        <option value="">Selecciona una zona</option>
+        <option value="EXTERIORES">EXTERIORES</option>
+        <option value="INTERIORES">INTERIORES</option>
+        <option value="FUNCIONAMIENTO ELÉCTRICO">FUNCIONAMIENTO ELÉCTRICO</option>
+        <option value="PRUEBA DE CARRETERA">PRUEBA DE CARRETERA</option>
+        <option value="PRUEBA DE AGUA">PRUEBA DE AGUA</option>
+        <option value="INTERIORES CIELO">INTERIORES CIELO</option>
+      </select>
+    </div>
+
+    <div id="actividades" class="mt-4"></div>
+
+    <div class="mt-4 d-flex gap-2">
+      <button type="submit" class="btn btn-success">Guardar en Local</button>
+      <button type="button" id="guardarSheets" class="btn btn-primary">Guardar en Google Sheets</button>
+      <button type="button" onclick="limpiarFormulario()" class="btn btn-warning">Limpiar</button>
+    </div>
   </form>
 
-  <div id="checklist" class="checklist"></div>
-
-  <div class="botones">
-	<button onclick="guardarDatos()">Guardar</button>
-	<button onclick="limpiarFormulario()">Limpiar</button>
-	<button onclick="mostrarImpresion()">Imprimir</button>
+  <div class="mt-5">
+    <h4>Revisiones guardadas</h4>
+    <pre id="output"></pre>
   </div>
+</div>
 
-  <div id="resultadosImpresion" class="imprimible"></div>
+<script>
+const actividades = {
+  "EXTERIORES": ["Puerta enrasada", "Rin sin daños", "Marca de llanta: [texto]"],
+  "INTERIORES": ["Tablero instalado", "Asiento sin daños"],
+  "FUNCIONAMIENTO ELÉCTRICO": ["Enciende", "Luces operativas"],
+  "PRUEBA DE CARRETERA": ["Sin ruidos", "Suspensión estable"],
+  "PRUEBA DE AGUA": ["Sin filtraciones puerta", "Sin filtraciones parabrisas"],
+  "INTERIORES CIELO": ["Techo sin filtraciones"]
+};
 
-  <script>
-	const actividadesPorZona = {
-  	EXTERIORES: [
-    	"Líneas de carácter en línea",
-    	"Puerta correctamente cuadrada y enrasada",
-    	"La puerta abre y cierra correctamente (Cierre al primer paso)",
-    	"Loderas correctamente instaladas",
-    	"El rin se encuentra limpio y libre de daños",
-    	"Revisar que la llanta no tenga daños ni objetos incrustados",
-    	"Anota la marca de la llanta [texto]",
-    	"Salpicadera y cantonera sin daños (pasar la llema de los dedos en los filos)",
-    	"Poste 'A' sin daños",
-    	"Parabrisas limpio y libre de daños",
-    	"Detalles de sika, franjeado y gomas PB bien colocados",
-    	"Marco de puerta correctamente alineado vs carrocería",
-    	"Cañuela y botaguas bien colocadas y sin daños",
-    	"Espejo retrovisor bien colocado sin daños",
-    	"Gomas exteriores de ventana en buen estado",
-    	"Molduras negras limpias, correctamente colocadas y sin daños (incluye moldura de puerta parte baja)",
-    	"Manijas externa / interna sin daño y funciona correctamente"
-  	],
-  	INTERIORES: [
-    	"Tablero correctamente instalado",
-    	"El tablero se encuentra limpio y sin ningún daño",
-    	"Baquela Izq. pared de fuego correctamente instalada",
-    	"Baquela Izq. poste A correctamente instalada y sin daños",
-    	"Asiento Izq. libre de marcas o rayas",
-    	"Cinturón de seguridad Izq. en buen estado y funciona correctamente",
-    	"Consola palanca de velocidades sin daños",
-    	"Rebajos (estribo) Izq. correctamente instalado y sin daños",
-    	"Espejo retrovisor central bien instalado y sin daño",
-    	"Tapa de sensor de lluvia bien colocada",
-    	"Visera Izq. bien colocada y limpia",
-    	"Alfombra piso limpia y sin daños"
-  	],
-  	ELECTRICO: [
-    	"El vehículo enciende adecuadamente",
-    	"El elevador Izq. funciona bien",
-    	"Encienden todas las luces interiores incluyendo 5ta puerta / guantera / bajo tablero / consola central",
-    	"Sin testigos en el tablero",
-    	"Funciona el A/C (velocidades)",
-    	"Funciona el Sistema de sonido, USB y Tomacorrientes",
-    	"Funcionan los limpiadores y chisgueteros (parabrisas / medallón)",
-    	"Funciona Asiento Del. Izq.",
-    	"Funcionan los seguros eléctricos",
-    	"Sensor de lluvia",
-    	"Enciende luz interior al abrir la puerta? (correr prueba 4 puertas)",
-    	"Funcionan sensores de presencia (facia delantera/trasera)",
-    	"Funcionan correctamente los GADGETs del volante?"
-  	],
-  	CARRETERA: [
-    	"Vehículo libre de ruidos por basura y/o objetos extraños",
-    	"Vehículo libre de ruidos por colocación de baquela, tapas, etc.",
-    	"El vehículo no presenta ruidos por entradas de aire",
-    	"Estabilidad y respuesta del vehículo",
-    	"Funciona velocímetro y odómetro",
-    	"Correcto desempeño en la suspensión?"
-  	],
-  	AGUA: [
-    	"Se encuentra libre de filtraciones de agua en puerta delantera Izq.",
-    	"Se encuentra libre de filtraciones de agua en parabrisas",
-    	"Se encuentra libre de filtraciones de agua en quemacocos"
-  	]
-	};
+let revisiones = JSON.parse(localStorage.getItem('revisiones')) || [];
 
-	document.getElementById("zona").addEventListener("change", function() {
-  	const zona = this.value;
-  	const contenedor = document.getElementById("checklist");
-  	contenedor.innerHTML = "";
-  	contenedor.style.display = zona ? "block" : "none";
-  	if (!zona) return;
- 	 
-  	actividadesPorZona[zona].forEach((actividad, index) => {
-    	const div = document.createElement("div");
-    	div.className = "actividad";
-    	let texto = actividad;
-    	const esTexto = actividad.includes("[texto]");
-    	if (esTexto) texto = actividad.replace(" [texto]", "");
-    	div.innerHTML = `<strong>${index + 1}. ${texto}</strong><br>`;
-   	 
-    	if (esTexto) {
-      	div.innerHTML += `<input type='text' class='campo-texto' data-actividad='${texto}' required />`;
-    	} else {
-      	const opciones = ["L1", "L2", "R1", "R2", "P1", "P2", "OK"];
-      	const valores = { L1: 10, L2: 20, R1: 10, R2: 20, P1: 10, P2: 20, OK: 0 };
-      	const botones = opciones.map(op =>
-        	`<button type='button' onclick='seleccionarRespuesta(this)'
-          	data-actividad="${texto}"
-          	data-valor="${valores[op]}"
-          	title="${op === 'OK' ? 'Aprobado' : 'Defecto nivel ' + op.charAt(1)}">
-          	${op}
-        	</button>`
-      	).join("");
-      	div.innerHTML += `<div class='respuesta'>${botones}</div>`;
-    	}
-    	contenedor.appendChild(div);
-  	});
-	});
+function renderActividades(zona) {
+  const cont = document.getElementById("actividades");
+  cont.innerHTML = "";
+  if (!zona) return;
+  actividades[zona].forEach((act, i) => {
+    const esTexto = act.includes("[texto]");
+    let label = act.replace(" [texto]", "");
+    cont.innerHTML += `
+      <div class="mb-3">
+        <label class="form-label">${i + 1}. ${label}</label>
+        ${esTexto ? `<input type="text" class="form-control" data-act="${label}" required>` : `
+          <select class="form-select" data-act="${label}">
+            <option value="">Selecciona</option>
+            <option value="L1">L1</option><option value="L2">L2</option>
+            <option value="R1">R1</option><option value="R2">R2</option>
+            <option value="P1">P1</option><option value="P2">P2</option>
+            <option value="OK">OK</option>
+          </select>`}
+      </div>`;
+  });
+}
 
-	function seleccionarRespuesta(boton) {
-  	const padre = boton.parentElement;
-  	[...padre.children].forEach(btn => {
-    	btn.style.background = "";
-    	btn.style.color = "";
-  	});
-  	boton.style.background = "#27ae60";
-  	boton.style.color = "white";
-  	padre.setAttribute("data-seleccion", boton.innerText);
-	}
+document.getElementById("zona").addEventListener("change", e => {
+  renderActividades(e.target.value);
+});
 
-	function guardarDatos() {
-  	// Validar campos obligatorios
-  	const camposRequeridos = ['torre', 'fecha', 'numero_revision', 'empleado', 'marca', 'tipo', 'nivel', 'serie', 'color', 'zona'];
-  	for (const campo of camposRequeridos) {
-    	if (!document.getElementById(campo).value) {
-      	alert(`Por favor complete el campo: ${campo.replace('_', ' ')}`);
-      	return;
-    	}
-  	}
+function getData() {
+  const zona = document.getElementById("zona").value;
+  const actividadesDOM = document.querySelectorAll("#actividades [data-act]");
+  const actividadesData = [...actividadesDOM].map(el => {
+    return {
+      actividad: el.dataset.act,
+      respuesta: el.value
+    };
+  });
 
-  	const zona = document.getElementById("zona").value;
-  	const actividades = [];
-  	let todasRespondidas = true;
- 	 
-  	document.querySelectorAll(".actividad").forEach(act => {
-    	const input = act.querySelector("input");
-    	if (input) {
-      	if (!input.value) {
-        	todasRespondidas = false;
-        	input.style.borderColor = "red";
-      	} else {
-        	actividades.push({ actividad: input.dataset.actividad, respuesta: input.value });
-      	}
-    	} else {
-      	const respuesta = act.querySelector(".respuesta");
-      	const seleccion = respuesta?.getAttribute("data-seleccion") || "";
-      	if (!seleccion) {
-        	todasRespondidas = false;
-        	respuesta.style.borderLeft = "2px solid red";
-      	} else {
-        	actividades.push({ actividad: respuesta.children[0].dataset.actividad, respuesta: seleccion });
-      	}
-    	}
-  	});
+  return {
+    torre: document.getElementById("torre").value,
+    fecha: document.getElementById("fecha").value,
+    numero_revision: document.getElementById("numero_revision").value,
+    empleado: document.getElementById("empleado").value,
+    marca: document.getElementById("marca").value,
+    tipo: document.getElementById("tipo").value,
+    nivel: document.getElementById("nivel").value,
+    serie: document.getElementById("serie").value,
+    color: document.getElementById("color").value,
+    zona: zona,
+    actividades: actividadesData
+  };
+}
 
-  	if (!todasRespondidas) {
-    	alert("Por favor responda todas las actividades de la checklist");
-    	return;
-  	}
+document.getElementById("formulario").addEventListener("submit", e => {
+  e.preventDefault();
+  const data = getData();
+  revisiones.push(data);
+  localStorage.setItem("revisiones", JSON.stringify(revisiones));
+  alert("Guardado localmente");
+  document.getElementById("output").textContent = JSON.stringify(revisiones, null, 2);
+});
 
-  	const data = {
-    	torre: document.getElementById("torre").value,
-    	fecha: document.getElementById("fecha").value,
-    	numero_revision: document.getElementById("numero_revision").value,
-    	empleado: document.getElementById("empleado").value,
-    	marca: document.getElementById("marca").value,
-    	tipo: document.getElementById("tipo").value,
-    	nivel: document.getElementById("nivel").value,
-    	serie: document.getElementById("serie").value,
-    	color: document.getElementById("color").value,
-    	zona: zona,
-    	actividades: actividades
-  	};
-
-  	// Mostrar carga mientras se envía
-  	const botonGuardar = document.querySelector("button[onclick='guardarDatos()']");
-  	const textoOriginal = botonGuardar.textContent;
-  	botonGuardar.textContent = "Guardando...";
-  	botonGuardar.disabled = true;
-
-  	fetch("https://script.google.com/macros/s/AKfycbwv7VbIVRtojwF2EhCR-V-hHKO70n5-wZ9ReVeJ3ofDyneWpwfPYyHmgnHWnceHpbaf/exec", {
-	method: "POST",
-	body: JSON.stringify(data),
-	headers: { "Content-Type": "application/json" },
-	redirect: "follow"
+document.getElementById("guardarSheets").addEventListener("click", () => {
+  const data = getData();
+  fetch("https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_URL/exec", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
   })
-  .then(response => {
-	// Primero verifica el estado de la respuesta
-	if (!response.ok) {
-  	throw new Error(`Error HTTP: ${response.status}`);
-	}
-	return response.text(); // Usamos text() en lugar de json()
-  })
-  .then(text => {
-	try {
-  	// Intenta parsear solo si hay contenido
-  	const result = text ? JSON.parse(text) : null;
- 	 
-  	if (result && result.success) {
-    	alert(result.message);
-    	limpiarFormulario();
-  	} else {
-    	throw new Error(result?.message || "Respuesta inválida del servidor");
-  	}
-	} catch (e) {
-  	console.error("Error parsing JSON:", e, "Raw response:", text);
-  	throw new Error("No se pudo procesar la respuesta del servidor");
-	}
-  })
-  	.catch(err => {
-    	console.error("Error:", err);
-    	alert("Error al guardar: " + err.message);
-  	})
-  	.finally(() => {
-    	botonGuardar.textContent = textoOriginal;
-    	botonGuardar.disabled = false;
-  	});
-	}
+    .then(res => res.text())
+    .then(res => {
+      alert("Enviado a Google Sheets exitosamente");
+    })
+    .catch(err => alert("Error al guardar en Sheets: " + err));
+});
 
-	function limpiarFormulario() {
-  	document.getElementById("formulario").reset();
-  	document.getElementById("checklist").innerHTML = "";
-  	document.getElementById("checklist").style.display = "none";
-  	document.getElementById("resultadosImpresion").innerHTML = "";
-	}
-
-	function mostrarImpresion() {
-  	const zona = document.getElementById("zona").value;
-  	if (!zona) {
-    	alert("Por favor seleccione una zona primero");
-    	return;
-  	}
-
-  	const actividades = [];
-  	document.querySelectorAll(".actividad").forEach((act, index) => {
-    	const input = act.querySelector("input");
-    	if (input) {
-      	actividades.push({
-        	numero: index + 1,
-        	actividad: input.dataset.actividad,
-        	respuesta: input.value || "No respondido"
-      	});
-    	} else {
-      	const respuesta = act.querySelector(".respuesta");
-      	const seleccion = respuesta?.getAttribute("data-seleccion") || "No respondido";
-      	actividades.push({
-        	numero: index + 1,
-        	actividad: respuesta.children[0].dataset.actividad,
-        	respuesta: seleccion
-      	});
-    	}
-  	});
-
-  	const datosCabecera = {
-    	Torre: document.getElementById("torre").value,
-    	Fecha: document.getElementById("fecha").value,
-    	"N° Revisión": document.getElementById("numero_revision").value,
-    	Empleado: document.getElementById("empleado").value,
-    	Marca: document.getElementById("marca").value,
-    	Tipo: document.getElementById("tipo").value,
-    	Nivel: document.getElementById("nivel").value,
-    	Serie: document.getElementById("serie").value,
-    	Color: document.getElementById("color").value,
-    	Zona: zona
-  	};
-
-  	let html = `
-    	<h2>Checklist de Entrega Final</h2>
-    	<h3>Vehículo Blindado - ${zona}</h3>
-    	<table>
-      	<thead>
-        	<tr>
-          	<th>Dato</th>
-          	<th>Valor</th>
-        	</tr>
-      	</thead>
-      	<tbody>
-  	`;
-
-  	for (let key in datosCabecera) {
-    	html += `
-      	<tr>
-        	<td><strong>${key}</strong></td>
-        	<td>${datosCabecera[key] || "No especificado"}</td>
-      	</tr>
-    	`;
-  	}
-
-  	html += `
-      	</tbody>
-    	</table>
-    	<h3>Resultados de la Inspección</h3>
-    	<table>
-      	<thead>
-        	<tr>
-          	<th>#</th>
-          	<th>Actividad</th>
-          	<th>Resultado</th>
-        	</tr>
-      	</thead>
-      	<tbody>
-  	`;
-
-  	actividades.forEach(a => {
-    	html += `
-      	<tr>
-        	<td>${a.numero}</td>
-        	<td>${a.actividad}</td>
-        	<td>${a.respuesta}</td>
-      	</tr>
-    	`;
-  	});
-
-  	html += `
-      	</tbody>
-    	</table>
-    	<p style="margin-top: 30px; text-align: right;">
-      	<strong>Firma del Inspector:</strong> ___________________________
-    	</p>
-  	`;
-
-  	const contenedor = document.getElementById("resultadosImpresion");
-  	contenedor.innerHTML = html;
-  	contenedor.style.display = "block";
- 	 
-  	setTimeout(() => {
-    	window.print();
-    	contenedor.style.display = "none";
-  	}, 500);
-	}
-  </script>
+function limpiarFormulario() {
+  document.getElementById("formulario").reset();
+  document.getElementById("actividades").innerHTML = "";
+}
+</script>
 </body>
 </html>
