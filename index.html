@@ -83,7 +83,7 @@ function guardarEnGoogleSheets() {
     boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
     boton.disabled = true;
 
-    fetch('https://script.google.com/macros/s/https://script.google.com/macros/library/d/1qJOrYwJWX8jgLlr_NN7fV50PrCfwE8Fe4lBM1ZvmykhUWqqtCVxlTY6j/1/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbyBZlSom0mcNAA80ujdQj29PTaXzY_aFigWT34p5FjpVXj5xDVTgsrt_HjFysz68ZollQ/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(currentInspection)
