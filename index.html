@@ -6,190 +6,115 @@
   <title>Checklist Vehículos Blindados</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
-    }
-    .header {
-      background-color: #343a40;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      border-radius: 5px;
-      margin-bottom: 20px;
-    }
-    .card-header {
-      background-color: #007bff;
-      color: white;
-      font-weight: bold;
-    }
-    .activity-item {
-      margin-bottom: 15px;
-      padding: 15px;
-      border: 1px solid #dee2e6;
-      border-radius: 5px;
-      background-color: #fff;
-    }
-    .option-btn {
-      margin: 2px;
-    }
-    .report-table th {
-      background-color: #f2f2f2;
-    }
-    @media print {
-      body * { visibility: hidden; }
-      .print-section, .print-section * { visibility: visible; }
-      .print-section {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        background-color: white;
-        padding: 20px;
-      }
-    }
+    body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .header { background-color: #343a40; color: white; padding: 20px 0; border-radius: 5px; margin-bottom: 20px; text-align: center; }
+    .card { box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: none; margin-bottom: 20px; }
+    .card-header { background-color: #007bff; color: white; font-weight: bold; }
+    .btn-zone { margin: 5px; min-width: 80px; }
+    .activity-item { background-color: #ffffff; padding: 15px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #dee2e6; }
+    .activity-text { font-weight: 500; margin-bottom: 10px; }
+    .option-btn { min-width: 60px; margin: 3px; border-radius: 20px; }
+    .option-btn.active { background-color: #0d6efd; color: white; }
   </style>
 </head>
 <body>
-  <div class="container-fluid">
+  <div class="container">
     <div class="header">
-      <h1>Checklist de Entrega Final</h1>
+      <h1>CHECKLIST DE ENTREGA FINAL</h1>
       <h2>Vehículo Blindado</h2>
     </div>
 
-    <div class="card mb-3">
-      <div class="card-header">Datos del Vehículo</div>
+    <!-- Zona y Subzona -->
+    <div class="card">
+      <div class="card-header">Selecciona Zona y Subzona</div>
       <div class="card-body">
-        <form id="header-form" class="row g-3">
-          <div class="col-md-3"><input type="text" id="tower" class="form-control" placeholder="Torre" required></div>
-          <div class="col-md-3"><input type="date" id="date" class="form-control" required></div>
-          <div class="col-md-3">
-            <select id="inspection-number" class="form-select" required>
-              <option value="">N° Revisión</option>
-              <option value="1ª">1ª</option>
-              <option value="2ª">2ª</option>
-              <option value="3ª">3ª</option>
-            </select>
-          </div>
-          <div class="col-md-3"><input type="number" id="employee" class="form-control" placeholder="Empleado" required></div>
-          <div class="col-md-3"><input type="text" id="brand" class="form-control" placeholder="Marca" required></div>
-          <div class="col-md-3"><input type="text" id="type" class="form-control" placeholder="Tipo" required></div>
-          <div class="col-md-3"><input type="text" id="level" class="form-control" placeholder="Nivel" required></div>
-          <div class="col-md-3"><input type="text" id="serial" class="form-control" placeholder="Serie" required></div>
-          <div class="col-md-3"><input type="text" id="color" class="form-control" placeholder="Color" required></div>
-        </form>
-      </div>
-    </div>
-
-    <div class="card mb-3">
-      <div class="card-header">Selección de Zona</div>
-      <div class="card-body d-flex flex-wrap">
-        <button class="btn btn-outline-primary m-2" onclick="selectZone('zona 1')">Zona 1</button>
-        <button class="btn btn-outline-primary m-2" onclick="selectZone('zona 2')">Zona 2</button>
-        <button class="btn btn-outline-primary m-2" onclick="selectZone('zona 3')">Zona 3</button>
-        <button class="btn btn-outline-primary m-2" onclick="selectZone('zona 4')">Zona 4</button>
-        <button class="btn btn-outline-primary m-2" onclick="selectZone('zona 5')">Zona 5</button>
-      </div>
-    </div>
-
-    <div class="card mb-3" id="checklist-section" style="display:none;">
-      <div class="card-header">Checklist - <span id="current-zone"></span></div>
-      <div class="card-body">
-        <select id="subzone" class="form-select mb-3" onchange="loadActivities()">
-          <option value="">Seleccionar subzona</option>
-          <option value="EXTERIORES">EXTERIORES</option>
-          <option value="INTERIORES">INTERIORES</option>
-          <option value="FUNCIONAMIENTO ELÉCTRICO">FUNCIONAMIENTO ELÉCTRICO</option>
-          <option value="PRUEBA DE CARRETERA">PRUEBA DE CARRETERA</option>
-          <option value="PRUEBA DE AGUA">PRUEBA DE AGUA</option>
-          <option value="INTERIORES CIELO">INTERIORES CIELO</option>
-        </select>
-        <div id="activities-container"></div>
-        <div class="mt-3">
-          <button class="btn btn-success" onclick="saveToGoogleSheet()">Guardar en Google Sheets</button>
+        <div class="mb-3">
+          <label class="form-label">Zona:</label>
+          <select id="zone-select" class="form-select">
+            <option value="">Seleccionar Zona...</option>
+            <option value="zona 1">Zona 1</option>
+            <option value="zona 2">Zona 2</option>
+            <option value="zona 3">Zona 3</option>
+            <option value="zona 4">Zona 4</option>
+            <option value="zona 5">Zona 5</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Subzona:</label>
+          <select id="subzone-select" class="form-select">
+            <option value="">Seleccionar Subzona...</option>
+            <option value="EXTERIORES">EXTERIORES</option>
+            <option value="INTERIORES">INTERIORES</option>
+            <option value="FUNCIONAMIENTO ELÉCTRICO">FUNCIONAMIENTO ELÉCTRICO</option>
+            <option value="PRUEBA DE CARRETERA">PRUEBA DE CARRETERA</option>
+            <option value="PRUEBA DE AGUA">PRUEBA DE AGUA</option>
+            <option value="INTERIORES CIELO">INTERIORES CIELO</option>
+          </select>
         </div>
       </div>
     </div>
 
-    <div class="print-section" id="print-section"></div>
-  </div>
+    <!-- Checklist -->
+    <div id="activities-container"></div>
 
-  <script>
-    const activities = {
-      "EXTERIORES": ["Puerta alineada", "Espejos sin daño"],
-      "INTERIORES": ["Tablero instalado", "Asientos sin manchas"],
-      "FUNCIONAMIENTO ELÉCTRICO": ["Luces encienden", "A/C funcional"],
-      "PRUEBA DE CARRETERA": ["Sin ruidos", "Frenado correcto"],
-      "PRUEBA DE AGUA": ["Sin filtraciones puerta", "Sin filtraciones parabrisas"],
-      "INTERIORES CIELO": ["Sin filtraciones techo", "Revestimiento completo"]
-    };
-
-    let selectedZone = "";
-
-    function selectZone(zone) {
-      selectedZone = zone;
-      document.getElementById('checklist-section').style.display = 'block';
-      document.getElementById('current-zone').innerText = zone;
-      document.getElementById('activities-container').innerHTML = '';
-      document.getElementById('subzone').value = '';
-    }
-
-    function loadActivities() {
-      const subzone = document.getElementById('subzone').value;
-      const container = document.getElementById('activities-container');
-      container.innerHTML = '';
-      if (!activities[subzone]) return;
-
-      activities[subzone].forEach((act, i) => {
-        const div = document.createElement('div');
-        div.className = 'activity-item';
-        div.innerHTML = `
-          <div><strong>${i + 1}. ${act}</strong></div>
-          <div>
-            <button type="button" class="btn btn-outline-success option-btn" onclick="selectOption(this)">OK</button>
-            <button type="button" class="btn btn-outline-danger option-btn" onclick="selectOption(this)">Falla</button>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function selectOption(btn) {
-      const group = btn.parentElement.querySelectorAll('button');
-      group.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    }
-
-    function saveToGoogleSheet() {
-      const data = {
-        torre: document.getElementById('tower').value,
-        fecha: document.getElementById('date').value,
-        numero_revision: document.getElementById('inspection-number').value,
-        empleado: document.getElementById('employee').value,
-        marca: document.getElementById('brand').value,
-        tipo: document.getElementById('type').value,
-        nivel: document.getElementById('level').value,
-        serie: document.getElementById('serial').value,
-        color: document.getElementById('color').value,
-        zona: selectedZone,
-        subzona: document.getElementById('subzone').value,
-        actividades: []
+    <script>
+      const activitiesBySubzone = {
+        "EXTERIORES": ["Puerta alineada", "Espejo sin daños"],
+        "INTERIORES": ["Tablero limpio", "Asientos en buen estado"],
+        "FUNCIONAMIENTO ELÉCTRICO": ["Luces encendidas", "A/C funcionando"],
+        "PRUEBA DE CARRETERA": ["Ruidos en suspensión", "Estabilidad al conducir"],
+        "PRUEBA DE AGUA": ["Filtraciones en puertas", "Filtraciones en quemacocos"],
+        "INTERIORES CIELO": ["Techo limpio", "Sin manchas"]
       };
 
-      document.querySelectorAll('#activities-container .activity-item').forEach(item => {
-        const nombre = item.querySelector('strong').innerText;
-        const selected = item.querySelector('button.active');
-        data.actividades.push({ actividad: nombre, resultado: selected ? selected.innerText : 'Sin respuesta' });
-      });
+      const options = [
+        { label: 'L1', value: 10 },
+        { label: 'L2', value: 20 },
+        { label: 'R1', value: 10 },
+        { label: 'R2', value: 20 },
+        { label: 'P1', value: 10 },
+        { label: 'P2', value: 20 },
+        { label: 'OK', value: 0 }
+      ];
 
-      fetch('https://script.google.com/macros/s/AKfycbxEJgXXXXX_TU_SCRIPT_ID_AQUI/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-      .then(res => alert('Checklist enviado a Google Sheets'))
-      .catch(err => alert('Error al enviar: ' + err));
-    }
-  </script>
+      const subzoneSelect = document.getElementById("subzone-select");
+      const activitiesContainer = document.getElementById("activities-container");
+
+      subzoneSelect.addEventListener("change", () => {
+        const selected = subzoneSelect.value;
+        activitiesContainer.innerHTML = "";
+        if (!selected) return;
+
+        const activities = activitiesBySubzone[selected] || [];
+        activities.forEach((text, idx) => {
+          const activityDiv = document.createElement("div");
+          activityDiv.className = "activity-item";
+
+          const title = document.createElement("div");
+          title.className = "activity-text";
+          title.textContent = `${idx + 1}. ${text}`;
+
+          const buttonsContainer = document.createElement("div");
+          options.forEach(opt => {
+            const btn = document.createElement("button");
+            btn.className = "btn btn-outline-primary option-btn";
+            btn.textContent = opt.label;
+            btn.dataset.value = opt.value;
+
+            btn.addEventListener("click", (e) => {
+              const siblings = e.target.parentElement.querySelectorAll(".option-btn");
+              siblings.forEach(sib => sib.classList.remove("active"));
+              e.target.classList.add("active");
+            });
+
+            buttonsContainer.appendChild(btn);
+          });
+
+          activityDiv.appendChild(title);
+          activityDiv.appendChild(buttonsContainer);
+          activitiesContainer.appendChild(activityDiv);
+        });
+      });
+    </script>
 </body>
 </html>
