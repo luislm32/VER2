@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Vehículos Blindados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            padding: 25px 0;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .header h2 {
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        
+        .card {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: none;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            color: white;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-bottom: none;
+        }
+        
+        .btn-zone {
+            margin: 5px;
+            min-width: 100px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-zone:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilos mejorados para las actividades */
+        .activity-item {
+            transition: all 0.3s ease;
+            border-left: 4px solid #dee2e6;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: white;
+            border-radius: 8px;
+        }
+
+        .activity-item:hover {
+            border-left-color: var(--accent-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .activity-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .option-btn {
+            min-width: 60px;
+            transition: all 0.2s ease;
+            border-radius: 15px;
+            font-weight: 500;
+        }
+
+        .progress {
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            height: 10px;
+        }
+
+        .progress-bar {
+            transition: width 0.6s ease;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .notes-input {
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            resize: vertical;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .table-responsive {
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .btn-save-gsheet {
+            background-color: #0f9d58;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .btn-save-gsheet:hover {
+            background-color: #0b8043;
+            color: white;
+        }
+        
+        .print-section {
+            display: none;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-section, .print-section * {
+                visibility: visible;
+            }
+            .print-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        
+        .report-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .vehicle-info {
+            margin-bottom: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-title {
+            background-color: var(--light-color);
+            padding: 10px 15px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 4px;
+        }
+        
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .report-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .report-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .report-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .signature-area {
+            margin-top: 60px;
+            border-top: 1px solid #000;
+            width: 300px;
+            text-align: center;
+            padding-top: 15px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .total-score {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 25px;
+            padding: 10px;
+            background-color: var(--light-color);
+            border-radius: 5px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo-placeholder {
+            width: 150px;
+            height: 80px;
+            background-color: #ddd;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            color: #777;
+            font-weight: bold;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 5px;
+            padding: 10px;
+            border: 1px solid #ced4da;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="header text-center">
+            <h1><i class="fas fa-car me-2"></i>Checklist Vehículos Blindados</h1>
+            <h2>Control de Calidad</h2>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-car me-2"></i>Información del Vehículo
+            </div>
+            <div class="card-body">
+                <form id="header-form">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="serial" class="form-label">Número de Serie</label>
+                            <input type="text" class="form-control" id="serial" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="model" class="form-label">Modelo</label>
+                            <input type="text" class="form-control" id="model" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="brand" class="form-label">Marca</label>
+                            <input type="text" class="form-control" id="brand" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="year" class="form-label">Año</label>
+                            <input type="number" class="form-control" id="year" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="color" class="form-label">Color</label>
+                            <input type="text" class="form-control" id="color" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="inspector" class="form-label">Inspector</label>
+                            <input type="text" class="form-control" id="inspector" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="date" class="form-label">Fecha</label>
+                            <input type="date" class="form-control" id="date" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-clipboard-check me-2"></i>Checklist de Inspección
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5 class="mb-3">Seleccione la zona a inspeccionar: <span id="current-zone" class="badge bg-primary">Ninguna</span></h5>
+                    <div class="d-flex flex-wrap">
+                        <button type="button" class="btn btn-zone btn-primary" data-zone="EXTERIORES">
+                            <i class="fas fa-car-side me-2"></i>Exteriores
+                        </button>
+                        <button type="button" class="btn btn-zone btn-primary" data-zone="INTERIORES">
+                            <i class="fas fa-car-alt me-2"></i>Interiores
+                        </button>
+                        <button type="button" class="btn btn-zone btn-primary" data-zone="FUNCIONAMIENTO ELÉCTRICO">
+                            <i class="fas fa-bolt me-2"></i>F. Eléctrico
+                        </button>
+                        <button type="button" class="btn btn-zone btn-primary" data-zone="PRUEBA DE CARRETERA">
+                            <i class="fas fa-road me-2"></i>Prueba Carretera
+                        </button>
+                        <button type="button" class="btn btn-zone btn-primary" data-zone="PRUEBA DE AGUA">
+                            <i class="fas fa-tint me-2"></i>Prueba Agua
+                        </button>
+                        <button type="button" class="btn btn-zone btn-primary" data-zone="INTERIORES CIELO">
+                            <i class="fas fa-sun me-2"></i>Interiores Cielo
+                        </button>
+                    </div>
+                </div>
+
+                <div id="checklist-container" style="display: none;">
+                    <div class="mb-3">
+                        <label for="subzone" class="form-label">Subzona:</label>
+                        <select id="subzone" class="form-select">
+                            <option value="">Seleccione una subzona...</option>
+                            <option value="EXTERIORES">Exteriores</option>
+                            <option value="INTERIORES">Interiores</option>
+                            <option value="FUNCIONAMIENTO ELÉCTRICO">Funcionamiento Eléctrico</option>
+                            <option value="PRUEBA DE CARRETERA">Prueba de Carretera</option>
+                            <option value="PRUEBA DE AGUA">Prueba de Agua</option>
+                            <option value="INTERIORES CIELO">Interiores Cielo</option>
+                        </select>
+                    </div>
+
+                    <div id="activities-container"></div>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="button" id="save-checklist" class="btn btn-success me-2">
+                            <i class="fas fa-save me-2"></i>Guardar Checklist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-database me-2"></i>Historial de Inspecciones
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <label for="inspection-select" class="form-label">Seleccione una inspección:</label>
+                        <select id="inspection-select" class="form-select" style="width: 300px; display: inline-block;">
+                            <option value="">Nueva inspección</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="button" id="save-gsheet" class="btn btn-save-gsheet me-2">
+                            <i class="fab fa-google me-2"></i>Guardar en Google Sheets
+                        </button>
+                        <button type="button" id="clear-form" class="btn btn-danger me-2">
+                            <i class="fas fa-trash me-2"></i>Limpiar Formulario
+                        </button>
+                        <button type="button" id="export-excel" class="btn btn-success me-2">
+                            <i class="fas fa-file-excel me-2"></i>Exportar a Excel
+                        </button>
+                        <button type="button" id="print-report" class="btn btn-primary">
+                            <i class="fas fa-print me-2"></i>Imprimir Reporte
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>N° Serie</th>
+                                <th>Modelo</th>
+                                <th>Marca</th>
+                                <th>Año</th>
+                                <th>Inspector</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inspections-body">
+                            <!-- Las inspecciones se cargarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de impresión (oculta hasta que se imprima) -->
+    <div id="print-section" class="print-section container">
+        <div class="report-header">
+            <div class="logo-container">
+                <div class="logo-placeholder">LOGO EMPRESA</div>
+            </div>
+            <h1>Reporte de Inspección de Calidad</h1>
+            <h3>Vehículos Blindados</h3>
+        </div>
+
+        <div class="vehicle-info">
+            <div class="row">
+                <div class="col-md-3">
+                    <p><strong>Número de Serie:</strong> <span id="print-serial"></span></p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Modelo:</strong> <span id="print-model"></span></p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Marca:</strong> <span id="print-brand"></span></p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Año:</strong> <span id="print-year"></span></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <p><strong>Color:</strong> <span id="print-color"></span></p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Inspector:</strong> <span id="print-inspector"></span></p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Fecha:</strong> <span id="print-date"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="print-checklist-results">
+            <!-- Los resultados del checklist se cargarán aquí -->
+        </div>
+
+        <div class="total-score">
+            Puntuación Total: <span id="print-total-score">0</span> puntos
+        </div>
+
+        <div class="signature-area">
+            <p>Firma del Inspector</p>
+            <div style="height: 50px;"></div>
+            <p>Nombre y Apellido</p>
+        </div>
+    </div>
+
+    <script>
+        // URL del Google Script proporcionada
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/library/d/1qJOrYwJWX8jgLlr_NN7fV50PrCfwE8Fe4lBM1ZvmykhUWqqtCVxlTY6j/1";
+
+        // Datos de las actividades por subzona
+        const activitiesBySubzone = {
+            "EXTERIORES": [
+                "Líneas de carácter en línea",
+                "Puerta correctamente cuadrada y enrasada",
+                "La puerta abre y cierra correctamente (Cierre al primer paso)",
+                "Loderas correctamente instaladas",
+                "El rin se encuentra limpio y libre de daños",
+                "Revisar que la llanta no tenga daños ni objetos incrustados",
+                "Anota la marca de la llanta:",
+                "Salpicadera y cantonera sin daños (pasar la llema de los dedos en los filos)",
+                "Poste \"A\" sin daños",
+                "Parabrisas limpio y libre de daños",
+                "Detalles de sika, franjeado y gomas PB bien colocados",
+                "Marco de puerta correctamente alineado vs carrocería",
+                "Cañuela y botaguas bien colocadas y sin daños",
+                "Espejo retrovisor bien colocado sin daños",
+                "Gomas exteriores de ventana en buen estado",
+                "Molduras negras limpias, correctamente colocadas y sin daños (incluye moldura de puerta parte baja)",
+                "Manijas externa / interna sin daño y funciona correctamente"
+            ],
+            "INTERIORES": [
+                "Tablero correctamente instalado",
+                "El tablero se encuentra limpio y sin ningún daño",
+                "Baquela Izq. pared de fuego correctamente instalada",
+                "Baquela Izq. poste A correctamente instalada y sin daños",
+                "Asiento Izq. libre de marcas o rayas",
+                "Cinturón de seguridad Izq. en buen estado y funciona correctamente",
+                "Consola palanca de velocidades sin daños",
+                "Rebajos (estribo) Izq. correctamente instalado y sin daños",
+                "Espejo retrovisor central bien instalado y sin daño",
+                "Tapa de sensor de lluvia bien colocada",
+                "Visera Izq. bien colocada y limpia",
+                "Alfombra piso limpia y sin daños"
+            ],
+            "FUNCIONAMIENTO ELÉCTRICO": [
+                "El vehículo enciende adecuadamente",
+                "El elevador Izq. funciona bien",
+                "Encienden todas las luces interiores incluyendo 5ta puerta / guantera / bajo tablero / consola central",
+                "Sin testigos en el tablero",
+                "Funciona el A/C (velocidades)",
+                "Funciona el Sistema de sonido, USB y Tomacorrientes",
+                "Funcionan los limpiadores y chisgueteros (parabrisas / medallón)",
+                "Funciona Asiento Del. Izq.",
+                "Funcionan los seguros eléctricos",
+                "Sensor de lluvia",
+                "Enciende luz interior al abrir la puerta? (correr prueba 4 puertas)",
+                "Funcionan sensores de presencia (facia delantera/trasera)",
+                "Funcionan correctamente los GADGETs del volante?"
+            ],
+            "PRUEBA DE CARRETERA": [
+                "Vehículo libre de ruidos por basura y/o objetos extraños",
+                "Vehículo libre de ruidos por colocación de baquela, tapas, etc.",
+                "El vehículo no presenta ruidos por entradas de aire",
+                "Estabilidad y respuesta del vehículo",
+                "Funciona velocímetro y odómetro",
+                "Correcto desempeño en la suspensión?"
+            ],
+            "PRUEBA DE AGUA": [
+                "Se encuentra libre de filtraciones de agua en puerta delantera Izq.",
+                "Se encuentra libre de filtraciones de agua en parabrisas",
+                "Se encuentra libre de filtraciones de agua en quemacocos"
+            ],
+            "INTERIORES CIELO": [
+                "Se encuentra libre de filtraciones de agua en puerta delantera Izq.",
+                "Se encuentra libre de filtraciones de agua en parabrisas",
+                "Se encuentra libre de filtraciones de agua en quemacocos"
+            ]
+        };
+
+        // Opciones para cada item del checklist
+        const checklistOptions = [
+            { text: "L1", value: 10 },
+            { text: "L2", value: 20 },
+            { text: "R1", value: 10 },
+            { text: "R2", value: 20 },
+            { text: "P1", value: 10 },
+            { text: "P2", value: 20 },
+            { text: "OK", value: 0 }
+        ];
+
+        // Almacenamiento de revisiones
+        let inspections = JSON.parse(localStorage.getItem('vehicleInspections')) || [];
+        let currentInspection = null;
+
+        // Elementos del DOM
+        const headerForm = document.getElementById('header-form');
+        const zoneBtns = document.querySelectorAll('.btn-zone');
+        const checklistContainer = document.getElementById('checklist-container');
+        const currentZoneSpan = document.getElementById('current-zone');
+        const subzoneSelect = document.getElementById('subzone');
+        const activitiesContainer = document.getElementById('activities-container');
+        const saveChecklistBtn = document.getElementById('save-checklist');
+        const saveGsheetBtn = document.getElementById('save-gsheet');
+        const clearFormBtn = document.getElementById('clear-form');
+        const exportExcelBtn = document.getElementById('export-excel');
+        const printReportBtn = document.getElementById('print-report');
+        const inspectionsBody = document.getElementById('inspections-body');
+        const printSection = document.getElementById('print-section');
+        const inspectionSelect = document.getElementById('inspection-select');
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            loadInspections();
+            updateInspectionOptions();
+        });
+
+        zoneBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const zone = btn.dataset.zone;
+                currentZoneSpan.textContent = zone;
+                checklistContainer.style.display = 'block';
+                activitiesContainer.innerHTML = '';
+                subzoneSelect.value = '';
+            });
+        });
+
+        subzoneSelect.addEventListener('change', (e) => {
+            const subzone = e.target.value;
+            if (subzone) {
+                showActivities(subzone);
+            }
+        });
+
+        saveChecklistBtn.addEventListener('click', saveChecklist);
+        saveGsheetBtn.addEventListener('click', saveToGoogleSheets);
+        clearFormBtn.addEventListener('click', clearForm);
+        exportExcelBtn.addEventListener('click', exportToExcel);
+        printReportBtn.addEventListener('click', printReport);
+        document.getElementById('serial').addEventListener('change', updateInspectionOptions);
+        inspectionSelect.addEventListener('change', loadInspectionData);
+
+        // Función para mostrar actividades
+        function showActivities(subzone) {
+            activitiesContainer.innerHTML = '';
+            
+            const activities = activitiesBySubzone[subzone];
+            if (!activities || activities.length === 0) {
+                activitiesContainer.innerHTML = `
+                    <div class="alert alert-info">
+                        No hay actividades definidas para esta subzona.
+                    </div>
+                `;
+                return;
+            }
+            
+            // Crear contenedor de progreso
+            const progressContainer = document.createElement('div');
+            progressContainer.className = 'mb-3';
+            progressContainer.innerHTML = `
+                <div class="d-flex justify-content-between mb-1">
+                    <small>Progreso: <span id="completed-count">0</span>/${activities.length}</small>
+                    <small id="score-display">Puntos: 0</small>
+                </div>
+                <div class="progress">
+                    <div id="progress-bar" class="progress-bar bg-danger" role="progressbar" style="width: 0%"></div>
+                </div>
+            `;
+            activitiesContainer.appendChild(progressContainer);
+            
+            // Mostrar cada actividad
+            activities.forEach((activity, index) => {
+                const activityDiv = document.createElement('div');
+                activityDiv.className = 'activity-item';
+                activityDiv.dataset.activityIndex = index;
+                
+                const activityText = document.createElement('div');
+                activityText.className = 'activity-text';
+                activityText.textContent = `${index + 1}. ${activity}`;
+                
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'd-flex flex-wrap gap-2 mb-2';
+                
+                // Agregar opción "No evaluado"
+                const notEvaluatedBtn = document.createElement('button');
+                notEvaluatedBtn.type = 'button';
+                notEvaluatedBtn.className = 'btn btn-outline-secondary option-btn';
+                notEvaluatedBtn.textContent = 'N/A';
+                notEvaluatedBtn.dataset.value = '0';
+                notEvaluatedBtn.dataset.result = 'No evaluado';
+                notEvaluatedBtn.addEventListener('click', handleOptionSelect);
+                optionsDiv.appendChild(notEvaluatedBtn);
+                
+                // Agregar opciones del checklist
+                checklistOptions.forEach(option => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'btn btn-outline-primary option-btn';
+                    btn.textContent = option.text;
+                    btn.dataset.value = option.value;
+                    btn.dataset.result = option.text;
+                    btn.title = `Valor: ${option.value} puntos`;
+                    btn.addEventListener('click', handleOptionSelect);
+                    optionsDiv.appendChild(btn);
+                });
+                
+                // Agregar campo de notas si es necesario
+                let notesInput = null;
+                if (activity.includes(":")) {
+                    notesInput = document.createElement('textarea');
+                    notesInput.className = 'form-control notes-input mt-2';
+                    notesInput.placeholder = 'Ingrese observaciones...';
+                    notesInput.rows = 2;
+                    notesInput.dataset.activityIndex = index;
+                    notesInput.addEventListener('change', updateProgress);
+                }
+                
+                activityDiv.appendChild(activityText);
+                activityDiv.appendChild(optionsDiv);
+                if (notesInput) activityDiv.appendChild(notesInput);
+                activitiesContainer.appendChild(activityDiv);
+            });
+            
+            // Actualizar progreso inicial
+            updateProgress();
+        }
+
+        function handleOptionSelect(e) {
+            const btn = e.currentTarget;
+            const activityItem = btn.closest('.activity-item');
+            const allOptions = activityItem.querySelectorAll('.option-btn');
+            
+            // Remover selección de otras opciones
+            allOptions.forEach(option => {
+                option.classList.remove('active', 'btn-success', 'btn-danger', 'btn-warning', 'btn-primary');
+                option.classList.add('btn-outline-secondary');
+            });
+            
+            // Marcar opción seleccionada
+            btn.classList.remove('btn-outline-secondary');
+            
+            // Estilo según el tipo de opción
+            if (btn.textContent === 'OK') {
+                btn.classList.add('active', 'btn-success');
+            } else if (btn.textContent === 'N/A') {
+                btn.classList.add('active', 'btn-secondary');
+            } else if (btn.textContent.startsWith('L')) {
+                btn.classList.add('active', 'btn-warning');
+            } else if (btn.textContent.startsWith('R') || btn.textContent.startsWith('P')) {
+                btn.classList.add('active', 'btn-danger');
+            } else {
+                btn.classList.add('active', 'btn-primary');
+            }
+            
+            // Actualizar progreso
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const activityItems = activitiesContainer.querySelectorAll('.activity-item');
+            let completed = 0;
+            let totalScore = 0;
+            
+            activityItems.forEach(item => {
+                const selectedOption = item.querySelector('.option-btn.active');
+                if (selectedOption) {
+                    completed++;
+                    totalScore += parseInt(selectedOption.dataset.value || '0');
+                }
+            });
+            
+            const totalActivities = activityItems.length;
+            const progressPercent = totalActivities > 0 ? Math.round((completed / totalActivities) * 100) : 0;
+            
+            // Actualizar UI
+            document.getElementById('completed-count').textContent = completed;
+            document.getElementById('score-display').textContent = `Puntos: ${totalScore}`;
+            
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = `${progressPercent}%`;
+            
+            // Cambiar color según progreso
+            if (progressPercent === 100) {
+                progressBar.classList.remove('bg-warning', 'bg-danger');
+                progressBar.classList.add('bg-success');
+            } else if (progressPercent > 50) {
+                progressBar.classList.remove('bg-success', 'bg-danger');
+                progressBar.classList.add('bg-warning');
+            } else {
+                progressBar.classList.remove('bg-success', 'bg-warning');
+                progressBar.classList.add('bg-danger');
+            }
+        }
+
+        function saveChecklist() {
+            const zone = currentZoneSpan.textContent;
+            const subzone = subzoneSelect.value;
+            
+            if (!zone || zone === 'Ninguna') {
+                alert('Por favor seleccione una zona primero');
+                return;
+            }
+            
+            if (!subzone) {
+                alert('Por favor seleccione una subzona');
+                return;
+            }
+            
+            const activityItems = activitiesContainer.querySelectorAll('.activity-item');
+            const activitiesData = [];
+            
+            activityItems.forEach(item => {
+                const activityIndex = item.dataset.activityIndex;
+                const activityText = item.querySelector('.activity-text').textContent.replace(/^\d+\.\s/, '');
+                const selectedOption = item.querySelector('.option-btn.active');
+                const notesInput = item.querySelector('.notes-input');
+                
+                let result = 'No evaluado';
+                let score = 0;
+                
+                if (selectedOption) {
+                    result = selectedOption.dataset.result;
+                    score = parseInt(selectedOption.dataset.value || '0');
+                }
+                
+                let notes = '';
+                if (notesInput) {
+                    notes = notesInput.value;
+                }
+                
+                activitiesData.push({
+                    index: activityIndex,
+                    activity: activityText,
+                    result: result,
+                    score: score,
+                    notes: notes
+                });
+            });
+            
+            // Verificar si todas las actividades fueron evaluadas
+            const completedCount = activitiesData.filter(a => a.result !== 'No evaluado').length;
+            if (completedCount < activityItems.length) {
+                if (!confirm(`Solo has evaluado ${completedCount} de ${activityItems.length} actividades. ¿Deseas guardar de todas formas?`)) {
+                    return;
+                }
+            }
+            
+            // Obtener información del vehículo
+            const serial = document.getElementById('serial').value;
+            const model = document.getElementById('model').value;
+            const brand = document.getElementById('brand').value;
+            const year = document.getElementById('year').value;
+            const color = document.getElementById('color').value;
+            const inspector = document.getElementById('inspector').value;
+            const date = document.getElementById('date').value;
+            
+            if (!serial || !model || !brand || !year || !color || !inspector || !date) {
+                alert('Por favor complete toda la información del vehículo');
+                return;
+            }
+            
+            // Crear o actualizar la inspección
+            const inspectionId = `${serial}-${Date.now()}`;
+            const now = new Date().toISOString();
+            
+            let inspection = inspections.find(i => i.id === inspectionId);
+            if (!inspection) {
+                inspection = {
+                    id: inspectionId,
+                    serial: serial,
+                    model: model,
+                    brand: brand,
+                    year: year,
+                    color: color,
+                    inspector: inspector,
+                    date: date,
+                    createdAt: now,
+                    updatedAt: now,
+                    zones: {}
+                };
+                inspections.push(inspection);
+            } else {
+                inspection.updatedAt = now;
+            }
+            
+            // Guardar los datos de la zona
+            if (!inspection.zones[zone]) {
+                inspection.zones[zone] = {};
+            }
+            
+            inspection.zones[zone][subzone] = {
+                activities: activitiesData,
+                completedAt: now
+            };
+            
+            // Actualizar localStorage
+            localStorage.setItem('vehicleInspections', JSON.stringify(inspections));
+            
+            // Actualizar UI
+            loadInspections();
+            updateInspectionOptions();
+            
+            alert('Checklist guardado exitosamente');
+        }
+
+        function loadInspections() {
+            inspectionsBody.innerHTML = '';
+            
+            if (inspections.length === 0) {
+                inspectionsBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center">No hay inspecciones guardadas</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Ordenar inspecciones por fecha (más reciente primero)
+            inspections.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+            
+            inspections.forEach(inspection => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${inspection.serial}</td>
+                    <td>${inspection.model}</td>
+                    <td>${inspection.brand}</td>
+                    <td>${inspection.year}</td>
+                    <td>${inspection.inspector}</td>
+                    <td>${new Date(inspection.updatedAt).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary view-inspection" data-id="${inspection.id}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-inspection" data-id="${inspection.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                inspectionsBody.appendChild(row);
+            });
+            
+            // Agregar event listeners a los botones
+            document.querySelectorAll('.view-inspection').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const inspectionId = btn.dataset.id;
+                    const inspection = inspections.find(i => i.id === inspectionId);
+                    if (inspection) {
+                        loadInspectionData(inspection);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.delete-inspection').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (confirm('¿Está seguro que desea eliminar esta inspección?')) {
+                        const inspectionId = btn.dataset.id;
+                        inspections = inspections.filter(i => i.id !== inspectionId);
+                        localStorage.setItem('vehicleInspections', JSON.stringify(inspections));
+                        loadInspections();
+                        updateInspectionOptions();
+                    }
+                });
+            });
+        }
+
+        function updateInspectionOptions() {
+            const serial = document.getElementById('serial').value;
+            inspectionSelect.innerHTML = '<option value="">Nueva inspección</option>';
+            
+            if (!serial) return;
+            
+            const serialInspections = inspections.filter(i => i.serial === serial);
+            if (serialInspections.length === 0) return;
+            
+            serialInspections.forEach(inspection => {
+                const option = document.createElement('option');
+                option.value = inspection.id;
+                option.textContent = `${inspection.model} - ${new Date(inspection.updatedAt).toLocaleDateString()}`;
+                inspectionSelect.appendChild(option);
+            });
+        }
+
+        function loadInspectionData(inspection) {
+            if (typeof inspection === 'string') {
+                const inspectionId = inspection;
+                inspection = inspections.find(i => i.id === inspectionId);
+                if (!inspection) return;
+            }
+            
+            // Cargar datos básicos
+            document.getElementById('serial').value = inspection.serial;
+            document.getElementById('model').value = inspection.model;
+            document.getElementById('brand').value = inspection.brand;
+            document.getElementById('year').value = inspection.year;
+            document.getElementById('color').value = inspection.color;
+            document.getElementById('inspector').value = inspection.inspector;
+            document.getElementById('date').value = inspection.date;
+            
+            // Actualizar currentInspection
+            currentInspection = inspection;
+            
+            // Mostrar primera zona si existe
+            const zones = Object.keys(inspection.zones);
+            if (zones.length > 0) {
+                const firstZone = zones[0];
+                currentZoneSpan.textContent = firstZone;
+                checklistContainer.style.display = 'block';
+                
+                const subzones = Object.keys(inspection.zones[firstZone]);
+                if (subzones.length > 0) {
+                    subzoneSelect.value = subzones[0];
+                    showActivities(subzones[0]);
+                    
+                    // Cargar datos guardados
+                    const savedActivities = inspection.zones[firstZone][subzones[0]].activities;
+                    const activityItems = activitiesContainer.querySelectorAll('.activity-item');
+                    
+                    activityItems.forEach(item => {
+                        const activityIndex = item.dataset.activityIndex;
+                        const savedActivity = savedActivities.find(a => a.index === activityIndex);
+                        
+                        if (savedActivity) {
+                            // Seleccionar opción
+                            const options = item.querySelectorAll('.option-btn');
+                            options.forEach(option => {
+                                if (option.dataset.result === savedActivity.result) {
+                                    option.click();
+                                }
+                            });
+                            
+                            // Cargar notas
+                            const notesInput = item.querySelector('.notes-input');
+                            if (notesInput && savedActivity.notes) {
+                                notesInput.value = savedActivity.notes;
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        function saveToGoogleSheets() {
+            if (!currentInspection) {
+                alert('No hay una inspección cargada para guardar');
+                return;
+            }
+            
+            // Mostrar mensaje de carga
+            saveGsheetBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Guardando...';
+            saveGsheetBtn.disabled = true;
+            
+            // Preparar datos para enviar
+            const dataToSend = {
+                inspection: currentInspection,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Enviar datos al Google Script
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataToSend)
+            })
+            .then(() => {
+                alert('Datos enviados a Google Sheets exitosamente');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al enviar datos a Google Sheets');
+            })
+            .finally(() => {
+                saveGsheetBtn.innerHTML = '<i class="fab fa-google me-2"></i>Guardar en Google Sheets';
+                saveGsheetBtn.disabled = false;
+            });
+        }
+
+        function clearForm() {
+            if (confirm('¿Está seguro que desea limpiar todo el formulario?')) {
+                headerForm.reset();
+                currentZoneSpan.textContent = 'Ninguna';
+                checklistContainer.style.display = 'none';
+                activitiesContainer.innerHTML = '';
+                subzoneSelect.value = '';
+                currentInspection = null;
+                inspectionSelect.value = '';
+            }
+        }
+
+        function exportToExcel() {
+            if (inspections.length === 0) {
+                alert('No hay inspecciones para exportar');
+                return;
+            }
+            
+            // Crear datos para exportar
+            let csvContent = "N° Serie,Modelo,Marca,Año,Color,Inspector,Fecha,Total Puntos\n";
+            
+            inspections.forEach(inspection => {
+                let totalScore = 0;
+                
+                // Calcular puntuación total
+                Object.values(inspection.zones).forEach(zone => {
+                    Object.values(zone).forEach(subzone => {
+                        subzone.activities.forEach(activity => {
+                            totalScore += activity.score || 0;
+                        });
+                    });
+                });
+                
+                csvContent += `"${inspection.serial}","${inspection.model}","${inspection.brand}",${inspection.year},"${inspection.color}","${inspection.inspector}","${inspection.date}",${totalScore}\n`;
+            });
+            
+            // Crear y descargar archivo
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `inspecciones_vehiculos_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function printReport() {
+            if (!currentInspection) {
+                alert('No hay una inspección cargada para imprimir');
+                return;
+            }
+            
+            // Actualizar información básica en la sección de impresión
+            document.getElementById('print-serial').textContent = currentInspection.serial;
+            document.getElementById('print-model').textContent = currentInspection.model;
+            document.getElementById('print-brand').textContent = currentInspection.brand;
+            document.getElementById('print-year').textContent = currentInspection.year;
+            document.getElementById('print-color').textContent = currentInspection.color;
+            document.getElementById('print-inspector').textContent = currentInspection.inspector;
+            document.getElementById('print-date').textContent = currentInspection.date;
+            
+            // Generar contenido del checklist
+            const printResults = document.getElementById('print-checklist-results');
+            printResults.innerHTML = '';
+            
+            let totalScore = 0;
+            
+            // Procesar cada zona y subzona
+            Object.entries(currentInspection.zones).forEach(([zoneName, zoneData]) => {
+                // Título de zona
+                const zoneTitle = document.createElement('h4');
+                zoneTitle.className = 'section-title';
+                zoneTitle.textContent = zoneName;
+                printResults.appendChild(zoneTitle);
+                
+                // Tabla de resultados
+                const table = document.createElement('table');
+                table.className = 'report-table';
+                
+                // Encabezados de tabla
+                const thead = document.createElement('thead');
+                thead.innerHTML = `
+                    <tr>
+                        <th>#</th>
+                        <th>Actividad</th>
+                        <th>Resultado</th>
+                        <th>Puntos</th>
+                        <th>Notas</th>
+                    </tr>
+                `;
+                table.appendChild(thead);
+                
+                // Cuerpo de tabla
+                const tbody = document.createElement('tbody');
+                
+                // Procesar cada subzona
+                Object.entries(zoneData).forEach(([subzoneName, subzoneData]) => {
+                    // Subtítulo de subzona
+                    const subzoneRow = document.createElement('tr');
+                    subzoneRow.innerHTML = `
+                        <td colspan="5" style="font-weight: bold; background-color: #f0f0f0;">${subzoneName}</td>
+                    `;
+                    tbody.appendChild(subzoneRow);
+                    
+                    // Actividades
+                    subzoneData.activities.forEach((activity, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${activity.activity}</td>
+                            <td>${activity.result}</td>
+                            <td>${activity.score}</td>
+                            <td>${activity.notes || '-'}</td>
+                        `;
+                        tbody.appendChild(row);
+                        
+                        totalScore += activity.score || 0;
+                    });
+                });
+                
+                table.appendChild(tbody);
+                printResults.appendChild(table);
+            });
+            
+            // Actualizar puntuación total
+            document.getElementById('print-total-score').textContent = totalScore;
+            
+            // Imprimir
+            window.print();
+        }
+    </script>
+</body>
+</html>
