@@ -5,150 +5,191 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checklist Vehículos Blindados</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+    .header {
+      background-color: #343a40;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .card-header {
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+    }
+    .activity-item {
+      margin-bottom: 15px;
+      padding: 15px;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+    .option-btn {
+      margin: 2px;
+    }
+    .report-table th {
+      background-color: #f2f2f2;
+    }
+    @media print {
+      body * { visibility: hidden; }
+      .print-section, .print-section * { visibility: visible; }
+      .print-section {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background-color: white;
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
-<body class="bg-light">
-<div class="container py-4">
-  <h2 class="text-center text-primary mb-4">Checklist de Entrega Final - Vehículo Blindado</h2>
+<body>
+  <div class="container-fluid">
+    <div class="header">
+      <h1>Checklist de Entrega Final</h1>
+      <h2>Vehículo Blindado</h2>
+    </div>
 
-  <form id="formulario">
-    <div class="row g-3">
-      <div class="col-md-3"><input type="text" id="torre" class="form-control" placeholder="Torre" required></div>
-      <div class="col-md-3"><input type="date" id="fecha" class="form-control" required></div>
-      <div class="col-md-3">
-        <select id="numero_revision" class="form-select" required>
-          <option value="">Nº Revisión</option>
-          <option value="1ª">1ª</option>
-          <option value="2ª">2ª</option>
-          <option value="3ª">3ª</option>
-        </select>
+    <div class="card mb-3">
+      <div class="card-header">Datos del Vehículo</div>
+      <div class="card-body">
+        <form id="header-form" class="row g-3">
+          <div class="col-md-3"><input type="text" id="tower" class="form-control" placeholder="Torre" required></div>
+          <div class="col-md-3"><input type="date" id="date" class="form-control" required></div>
+          <div class="col-md-3">
+            <select id="inspection-number" class="form-select" required>
+              <option value="">N° Revisión</option>
+              <option value="1ª">1ª</option>
+              <option value="2ª">2ª</option>
+              <option value="3ª">3ª</option>
+            </select>
+          </div>
+          <div class="col-md-3"><input type="number" id="employee" class="form-control" placeholder="Empleado" required></div>
+          <div class="col-md-3"><input type="text" id="brand" class="form-control" placeholder="Marca" required></div>
+          <div class="col-md-3"><input type="text" id="type" class="form-control" placeholder="Tipo" required></div>
+          <div class="col-md-3"><input type="text" id="level" class="form-control" placeholder="Nivel" required></div>
+          <div class="col-md-3"><input type="text" id="serial" class="form-control" placeholder="Serie" required></div>
+          <div class="col-md-3"><input type="text" id="color" class="form-control" placeholder="Color" required></div>
+        </form>
       </div>
-      <div class="col-md-3"><input type="number" id="empleado" class="form-control" placeholder="Empleado" required></div>
-      <div class="col-md-3"><input type="text" id="marca" class="form-control" placeholder="Marca" required></div>
-      <div class="col-md-3"><input type="text" id="tipo" class="form-control" placeholder="Tipo" required></div>
-      <div class="col-md-3"><input type="text" id="nivel" class="form-control" placeholder="Nivel" required></div>
-      <div class="col-md-3"><input type="text" id="serie" class="form-control" placeholder="Serie" required></div>
-      <div class="col-md-3"><input type="text" id="color" class="form-control" placeholder="Color" required></div>
     </div>
 
-    <div class="mt-4">
-      <label for="zona" class="form-label">Zona</label>
-      <select id="zona" class="form-select" required>
-        <option value="">Selecciona una zona</option>
-        <option value="EXTERIORES">EXTERIORES</option>
-        <option value="INTERIORES">INTERIORES</option>
-        <option value="FUNCIONAMIENTO ELÉCTRICO">FUNCIONAMIENTO ELÉCTRICO</option>
-        <option value="PRUEBA DE CARRETERA">PRUEBA DE CARRETERA</option>
-        <option value="PRUEBA DE AGUA">PRUEBA DE AGUA</option>
-        <option value="INTERIORES CIELO">INTERIORES CIELO</option>
-      </select>
+    <div class="card mb-3">
+      <div class="card-header">Selección de Zona</div>
+      <div class="card-body d-flex flex-wrap">
+        <button class="btn btn-outline-primary m-2" onclick="selectZone('zona 1')">Zona 1</button>
+        <button class="btn btn-outline-primary m-2" onclick="selectZone('zona 2')">Zona 2</button>
+        <button class="btn btn-outline-primary m-2" onclick="selectZone('zona 3')">Zona 3</button>
+        <button class="btn btn-outline-primary m-2" onclick="selectZone('zona 4')">Zona 4</button>
+        <button class="btn btn-outline-primary m-2" onclick="selectZone('zona 5')">Zona 5</button>
+      </div>
     </div>
 
-    <div id="actividades" class="mt-4"></div>
-
-    <div class="mt-4 d-flex gap-2">
-      <button type="submit" class="btn btn-success">Guardar en Local</button>
-      <button type="button" id="guardarSheets" class="btn btn-primary">Guardar en Google Sheets</button>
-      <button type="button" onclick="limpiarFormulario()" class="btn btn-warning">Limpiar</button>
+    <div class="card mb-3" id="checklist-section" style="display:none;">
+      <div class="card-header">Checklist - <span id="current-zone"></span></div>
+      <div class="card-body">
+        <select id="subzone" class="form-select mb-3" onchange="loadActivities()">
+          <option value="">Seleccionar subzona</option>
+          <option value="EXTERIORES">EXTERIORES</option>
+          <option value="INTERIORES">INTERIORES</option>
+          <option value="FUNCIONAMIENTO ELÉCTRICO">FUNCIONAMIENTO ELÉCTRICO</option>
+          <option value="PRUEBA DE CARRETERA">PRUEBA DE CARRETERA</option>
+          <option value="PRUEBA DE AGUA">PRUEBA DE AGUA</option>
+          <option value="INTERIORES CIELO">INTERIORES CIELO</option>
+        </select>
+        <div id="activities-container"></div>
+        <div class="mt-3">
+          <button class="btn btn-success" onclick="saveToGoogleSheet()">Guardar en Google Sheets</button>
+        </div>
+      </div>
     </div>
-  </form>
 
-  <div class="mt-5">
-    <h4>Revisiones guardadas</h4>
-    <pre id="output"></pre>
+    <div class="print-section" id="print-section"></div>
   </div>
-</div>
 
-<script>
-const actividades = {
-  "EXTERIORES": ["Puerta enrasada", "Rin sin daños", "Marca de llanta: [texto]"],
-  "INTERIORES": ["Tablero instalado", "Asiento sin daños"],
-  "FUNCIONAMIENTO ELÉCTRICO": ["Enciende", "Luces operativas"],
-  "PRUEBA DE CARRETERA": ["Sin ruidos", "Suspensión estable"],
-  "PRUEBA DE AGUA": ["Sin filtraciones puerta", "Sin filtraciones parabrisas"],
-  "INTERIORES CIELO": ["Techo sin filtraciones"]
-};
-
-let revisiones = JSON.parse(localStorage.getItem('revisiones')) || [];
-
-function renderActividades(zona) {
-  const cont = document.getElementById("actividades");
-  cont.innerHTML = "";
-  if (!zona) return;
-  actividades[zona].forEach((act, i) => {
-    const esTexto = act.includes("[texto]");
-    let label = act.replace(" [texto]", "");
-    cont.innerHTML += `
-      <div class="mb-3">
-        <label class="form-label">${i + 1}. ${label}</label>
-        ${esTexto ? `<input type="text" class="form-control" data-act="${label}" required>` : `
-          <select class="form-select" data-act="${label}">
-            <option value="">Selecciona</option>
-            <option value="L1">L1</option><option value="L2">L2</option>
-            <option value="R1">R1</option><option value="R2">R2</option>
-            <option value="P1">P1</option><option value="P2">P2</option>
-            <option value="OK">OK</option>
-          </select>`}
-      </div>`;
-  });
-}
-
-document.getElementById("zona").addEventListener("change", e => {
-  renderActividades(e.target.value);
-});
-
-function getData() {
-  const zona = document.getElementById("zona").value;
-  const actividadesDOM = document.querySelectorAll("#actividades [data-act]");
-  const actividadesData = [...actividadesDOM].map(el => {
-    return {
-      actividad: el.dataset.act,
-      respuesta: el.value
+  <script>
+    const activities = {
+      "EXTERIORES": ["Puerta alineada", "Espejos sin daño"],
+      "INTERIORES": ["Tablero instalado", "Asientos sin manchas"],
+      "FUNCIONAMIENTO ELÉCTRICO": ["Luces encienden", "A/C funcional"],
+      "PRUEBA DE CARRETERA": ["Sin ruidos", "Frenado correcto"],
+      "PRUEBA DE AGUA": ["Sin filtraciones puerta", "Sin filtraciones parabrisas"],
+      "INTERIORES CIELO": ["Sin filtraciones techo", "Revestimiento completo"]
     };
-  });
 
-  return {
-    torre: document.getElementById("torre").value,
-    fecha: document.getElementById("fecha").value,
-    numero_revision: document.getElementById("numero_revision").value,
-    empleado: document.getElementById("empleado").value,
-    marca: document.getElementById("marca").value,
-    tipo: document.getElementById("tipo").value,
-    nivel: document.getElementById("nivel").value,
-    serie: document.getElementById("serie").value,
-    color: document.getElementById("color").value,
-    zona: zona,
-    actividades: actividadesData
-  };
-}
+    let selectedZone = "";
 
-document.getElementById("formulario").addEventListener("submit", e => {
-  e.preventDefault();
-  const data = getData();
-  revisiones.push(data);
-  localStorage.setItem("revisiones", JSON.stringify(revisiones));
-  alert("Guardado localmente");
-  document.getElementById("output").textContent = JSON.stringify(revisiones, null, 2);
-});
+    function selectZone(zone) {
+      selectedZone = zone;
+      document.getElementById('checklist-section').style.display = 'block';
+      document.getElementById('current-zone').innerText = zone;
+      document.getElementById('activities-container').innerHTML = '';
+      document.getElementById('subzone').value = '';
+    }
 
-document.getElementById("guardarSheets").addEventListener("click", () => {
-  const data = getData();
-  fetch("https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_URL/exec", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-    .then(res => res.text())
-    .then(res => {
-      alert("Enviado a Google Sheets exitosamente");
-    })
-    .catch(err => alert("Error al guardar en Sheets: " + err));
-});
+    function loadActivities() {
+      const subzone = document.getElementById('subzone').value;
+      const container = document.getElementById('activities-container');
+      container.innerHTML = '';
+      if (!activities[subzone]) return;
 
-function limpiarFormulario() {
-  document.getElementById("formulario").reset();
-  document.getElementById("actividades").innerHTML = "";
-}
-</script>
+      activities[subzone].forEach((act, i) => {
+        const div = document.createElement('div');
+        div.className = 'activity-item';
+        div.innerHTML = `
+          <div><strong>${i + 1}. ${act}</strong></div>
+          <div>
+            <button type="button" class="btn btn-outline-success option-btn" onclick="selectOption(this)">OK</button>
+            <button type="button" class="btn btn-outline-danger option-btn" onclick="selectOption(this)">Falla</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function selectOption(btn) {
+      const group = btn.parentElement.querySelectorAll('button');
+      group.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function saveToGoogleSheet() {
+      const data = {
+        torre: document.getElementById('tower').value,
+        fecha: document.getElementById('date').value,
+        numero_revision: document.getElementById('inspection-number').value,
+        empleado: document.getElementById('employee').value,
+        marca: document.getElementById('brand').value,
+        tipo: document.getElementById('type').value,
+        nivel: document.getElementById('level').value,
+        serie: document.getElementById('serial').value,
+        color: document.getElementById('color').value,
+        zona: selectedZone,
+        subzona: document.getElementById('subzone').value,
+        actividades: []
+      };
+
+      document.querySelectorAll('#activities-container .activity-item').forEach(item => {
+        const nombre = item.querySelector('strong').innerText;
+        const selected = item.querySelector('button.active');
+        data.actividades.push({ actividad: nombre, resultado: selected ? selected.innerText : 'Sin respuesta' });
+      });
+
+      fetch('https://script.google.com/macros/s/AKfycbxEJgXXXXX_TU_SCRIPT_ID_AQUI/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => alert('Checklist enviado a Google Sheets'))
+      .catch(err => alert('Error al enviar: ' + err));
+    }
+  </script>
 </body>
 </html>
