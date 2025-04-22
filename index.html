@@ -214,8 +214,66 @@
     });
 
     function guardarDatos() {
-      alert("https://script.google.com/macros/s/AKfycbwpWu_x97lKttVpJTiE64d2cNX_-LPe3gsqH--HYsnHilr0Yg2LkoOnVhA76zqdPg9-ug/exec");
-    }
+  // Obtener datos del encabezado
+  const headerData = {
+    torre: document.getElementById("torre").value,
+    fecha: document.getElementById("fecha").value,
+    revision: document.getElementById("revision").value,
+    empleado: document.getElementById("empleado").value,
+    marca: document.getElementById("marca").value,
+    tipo: document.getElementById("tipo").value,
+    nivel: document.getElementById("nivel").value,
+    serie: document.getElementById("serie").value,
+    color: document.getElementById("color").value,
+    zona: document.getElementById("zona").value,
+    subzona: document.getElementById("subzona").value
+  };
+
+  // Obtener datos de las actividades
+  const actividades = [];
+  const activityItems = document.querySelectorAll(".activity-item");
+  
+  activityItems.forEach((item, index) => {
+    const label = item.querySelector(".fw-bold").textContent.replace(`${index + 1}. `, "");
+    const selectedButton = item.querySelector(".btn-active");
+    const resultado = selectedButton ? selectedButton.textContent : "No seleccionado";
+    const valor = selectedButton ? selectedButton.dataset.value : "0";
+    
+    actividades.push({
+      actividad: label,
+      resultado: resultado,
+      valor: valor
+    });
+  });
+
+  // Preparar datos finales para enviar
+  const datos = {
+    encabezado: headerData,
+    actividades: actividades,
+    timestamp: new Date().toISOString()
+  };
+
+  // Enviar datos al Google Apps Script
+  fetch("https://script.google.com/macros/s/AKfycbwpWu_x97lKttVpJTiE64d2cNX_-LPe3gsqH--HYsnHilr0Yg2LkoOnVhA76zqdPg9-ug/exec", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(datos)
+  })
+  .then(response => response.text())
+  .then(data => {
+    console.log("Respuesta del servidor:", data);
+    alert("¡Checklist guardado con éxito!");
+    // Opcional: Limpiar el formulario después de guardar
+    // document.getElementById("header-form").reset();
+    // document.getElementById("actividades").innerHTML = "";
+  })
+  .catch(error => {
+    console.error("Error:", error);
+    alert("Ocurrió un error al guardar el checklist: " + error.message);
+  });
+}
   </script>
 </body>
 </html>
