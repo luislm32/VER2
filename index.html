@@ -253,6 +253,7 @@
 
       fetch("https://script.google.com/macros/s/AKfycbwKCL2ZpmDW3fSnRyea_IzmEmd1W6UsGhHSQ_WfvzR_khXq4gKFa-RqiN_lrcUlJTfSlw/exec", {
         method: "POST",
+        mode: "no-cors", // 👈 Esto evita que el navegador bloquee la solicitud
         headers: {
           "Content-Type": "application/json"
         },
