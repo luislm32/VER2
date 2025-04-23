@@ -276,6 +276,78 @@
       document.getElementById("subzona").value = "";
       document.getElementById("actividades").innerHTML = "";
     }
+    function imprimirFormulario() {
+  const headerFields = [
+    { label: "Torre", value: document.getElementById("torre").value },
+    { label: "Fecha", value: document.getElementById("fecha").value },
+    { label: "Revisión", value: document.getElementById("revision").value },
+    { label: "Empleado", value: document.getElementById("empleado").value },
+    { label: "Marca", value: document.getElementById("marca").value },
+    { label: "Tipo", value: document.getElementById("tipo").value },
+    { label: "Nivel", value: document.getElementById("nivel").value },
+    { label: "Serie", value: document.getElementById("serie").value },
+    { label: "Color", value: document.getElementById("color").value },
+    { label: "Zona", value: document.getElementById("zona").value },
+    { label: "Subzona", value: document.getElementById("subzona").value }
+  ];
+
+  const actividades = Array.from(document.querySelectorAll(".activity-item")).map((item, idx) => {
+    const actividad = item.querySelector(".fw-bold").textContent.replace(`${idx + 1}. `, "");
+    const respuesta = item.querySelector(".btn-active")?.textContent || "No seleccionado";
+    const valor = parseInt(item.querySelector(".btn-active")?.dataset.value || 0);
+    return { actividad, respuesta, valor };
+  });
+
+  const puntajeTotal = actividades.reduce((sum, act) => sum + act.valor, 0);
+
+  let html = `
+    <html>
+    <head>
+      <title>Checklist Vehículo Blindado</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        h1 { text-align: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        td, th { padding: 8px; border: 1px solid #ccc; }
+        th { background-color: #f0f0f0; text-align: left; }
+        .respuesta { font-weight: bold; color: #2c3e50; }
+        .footer { margin-top: 30px; font-style: italic; text-align: right; }
+      </style>
+    </head>
+    <body>
+      <h1>Checklist de Entrega Final - Vehículo Blindado</h1>
+      <table>
+        ${headerFields.map(f => `<tr><th>${f.label}</th><td>${f.value}</td></tr>`).join("")}
+      </table>
+
+      <h2>Actividades</h2>
+      <table>
+        <tr><th>#</th><th>Actividad</th><th>Respuesta</th><th>Puntos</th></tr>
+        ${actividades.map((act, idx) => `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>${act.actividad}</td>
+            <td class="respuesta">${act.respuesta}</td>
+            <td>${act.valor}</td>
+          </tr>
+        `).join("")}
+      </table>
+
+      <div class="footer">
+        Puntaje total por subzona: <strong>${puntajeTotal}</strong>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const ventana = window.open('', '', 'width=1000,height=800');
+  ventana.document.write(html);
+  ventana.document.close();
+  ventana.focus();
+  ventana.print();
+  ventana.close();
+}
+
   </script>
 </body>
 </html>
