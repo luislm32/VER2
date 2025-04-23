@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checklist Vehículos Blindados</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 20px;
+    }
+    .header {
+      background-color: #343a40;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .section-title {
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .activity-item {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 10px;
+      background-color: #fff;
+    }
+    .activity-buttons button {
+      margin: 2px;
+    }
+    .btn-active {
+      background-color: #0d6efd !important;
+      color: white !important;
+    }
+    @media print {
+      body * { visibility: hidden; }
+      #printable, #printable * { visibility: visible; }
+      #printable { position: absolute; top: 0; left: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Checklist de Entrega Final</h1>
+    <h2>Vehículo Blindado</h2>
+  </div>
+
+  <div class="container">
+    <form id="header-form" class="row g-3">
+      <div class="col-md-3"><label>Torre:</label><input type="text" id="torre" class="form-control" required></div>
+      <div class="col-md-3"><label>Fecha:</label><input type="date" id="fecha" class="form-control" required></div>
+      <div class="col-md-3"><label>N° Revisión:</label>
+        <select id="revision" class="form-select" required>
+          <option value="">Seleccionar</option>
+          <option value="1ª">1ª</option>
+          <option value="2ª">2ª</option>
+          <option value="3ª">3ª</option>
+        </select>
+      </div>
+      <div class="col-md-3"><label>Empleado:</label><input type="number" id="empleado" class="form-control" required></div>
+      <div class="col-md-3"><label>Marca:</label><input type="text" id="marca" class="form-control" required></div>
+      <div class="col-md-3"><label>Tipo:</label><input type="text" id="tipo" class="form-control" required></div>
+      <div class="col-md-3"><label>Nivel:</label><input type="text" id="nivel" class="form-control" required></div>
+      <div class="col-md-3"><label>Serie:</label><input type="text" id="serie" class="form-control" required></div>
+      <div class="col-md-3"><label>Color:</label><input type="text" id="color" class="form-control" required></div>
+    </form>
+
+    <div class="section-title">Zona:</div>
+    <div class="mb-3">
+      <select id="zona" class="form-select">
+        <option value="">Seleccionar zona</option>
+        <option value="1">Zona 1</option>
+        <option value="2">Zona 2</option>
+        <option value="3">Zona 3</option>
+        <option value="4">Zona 4</option>
+        <option value="5">Zona 5</option>
+      </select>
+    </div>
+
+    <div class="section-title">Subzona:</div>
+    <div class="mb-4">
+      <select id="subzona" class="form-select">
+        <option value="">Seleccionar subzona</option>
+        <option value="EXTERIORES">EXTERIORES</option>
+        <option value="INTERIORES">INTERIORES</option>
+        <option value="FUNCIONAMIENTO ELÉCTRICO">FUNCIONAMIENTO ELÉCTRICO</option>
+        <option value="PRUEBA DE CARRETERA">PRUEBA DE CARRETERA</option>
+        <option value="PRUEBA DE AGUA">PRUEBA DE AGUA</option>
+        <option value="INTERIORES CIELO">INTERIORES CIELO</option>
+      </select>
+    </div>
+
+    <div id="actividades" class="mb-5"></div>
+
+    <div class="d-flex gap-2 mb-4">
+      <button class="btn btn-primary" onclick="guardarDatos()" type="button">Guardar</button>
+      <button class="btn btn-secondary" onclick="window.print()" type="button">Imprimir</button>
+    </div>
+
+    <div id="printable"></div>
+  </div>
+
+  <script>
+    const actividadesPorSubzona = {
+      "EXTERIORES": [
+        "Líneas de carácter en línea",
+        "Puerta correctamente cuadrada y enrasada",
+        "La puerta abre y cierra correctamente (Cierre al primer paso)",
+        "Loderas correctamente instaladas",
+        "El rin se encuentra limpio y libre de daños",
+        "Revisar que la llanta no tenga daños ni objetos incrustados",
+        "Anota la marca de la llanta:",
+        "Salpicadera y cantonera sin daños (pasar la llema de los dedos en los filos)",
+        "Poste 'A' sin daños",
+        "Parabrisas limpio y libre de daños",
+        "Detalles de sika, franjeado y gomas PB bien colocados",
+        "Marco de puerta correctamente alineado vs carrocería",
+        "Cañuela y botaguas bien colocadas y sin daños",
+        "Espejo retrovisor bien colocado sin daños",
+        "Gomas exteriores de ventana en buen estado",
+        "Molduras negras limpias, correctamente colocadas y sin daños (incluye moldura de puerta parte baja)",
+        "Manijas externa / interna sin daño y funciona correctamente"
+      ],
+      "INTERIORES": [
+        "Tablero correctamente instalado",
+        "El tablero se encuentra limpio y sin ningún daño",
+        "Baquela Izq. pared de fuego correctamente instalada",
+        "Baquela Izq. poste A correctamente instalada y sin daños",
+        "Asiento Izq. libre de marcas o rayas",
+        "Cinturón de seguridad Izq. en buen estado y funciona correctamente",
+        "Consola palanca de velocidades sin daños",
+        "Rebajos (estribo) Izq. correctamente instalado y sin daños",
+        "Espejo retrovisor central bien instalado y sin daño",
+        "Tapa de sensor de lluvia bien colocada",
+        "Visera Izq. bien colocada y limpia",
+        "Alfombra piso limpia y sin daños"
+      ],
+      "FUNCIONAMIENTO ELÉCTRICO": [
+        "El vehículo enciende adecuadamente",
+        "El elevador Izq. funciona bien",
+        "Encienden todas las luces interiores incluyendo 5ta puerta / guantera / bajo tablero / consola central",
+        "Sin testigos en el tablero",
+        "Funciona el A/C (velocidades)",
+        "Funciona el Sistema de sonido, USB y Tomacorrientes",
+        "Funcionan los limpiadores y chisgueteros (parabrisas / medallón)",
+        "Funciona Asiento Del. Izq.",
+        "Funcionan los seguros eléctricos",
+        "Sensor de lluvia",
+        "Enciende luz interior al abrir la puerta? (correr prueba 4 puertas)",
+        "Funcionan sensores de presencia (facia delantera/trasera)",
+        "Funcionan correctamente los GADGETs del volante?"
+      ],
+      "PRUEBA DE CARRETERA": [
+        "Vehículo libre de ruidos por basura y/o objetos extraños",
+        "Vehículo libre de ruidos por colocación de baquela, tapas, etc.",
+        "El vehículo no presenta ruidos por entradas de aire",
+        "Estabilidad y respuesta del vehículo",
+        "Funciona velocímetro y odómetro",
+        "Correcto desempeño en la suspensión?"
+      ],
+      "PRUEBA DE AGUA": [
+        "Se encuentra libre de filtraciones de agua en puerta delantera Izq.",
+        "Se encuentra libre de filtraciones de agua en parabrisas",
+        "Se encuentra libre de filtraciones de agua en quemacocos"
+      ],
+      "INTERIORES CIELO": [
+        "Se encuentra libre de filtraciones de agua en puerta delantera Izq.",
+        "Se encuentra libre de filtraciones de agua en parabrisas",
+        "Se encuentra libre de filtraciones de agua en quemacocos"
+      ]
+    };
+
+    const valores = { L1: 10, L2: 20, R1: 10, R2: 20, P1: 10, P2: 20, OK: 0 };
+
+    document.getElementById('subzona').addEventListener('change', function () {
+      const subzona = this.value;
+      const actividades = actividadesPorSubzona[subzona] || [];
+      const container = document.getElementById('actividades');
+      container.innerHTML = '';
+
+      actividades.forEach((texto, idx) => {
+        const item = document.createElement('div');
+        item.className = 'activity-item';
+
+        const label = document.createElement('div');
+        label.className = 'mb-2 fw-bold';
+        label.textContent = `${idx + 1}. ${texto}`;
+        item.appendChild(label);
+
+        const btns = document.createElement('div');
+        btns.className = 'activity-buttons';
+
+        Object.keys(valores).forEach(key => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = key;
+          b.className = 'btn btn-outline-primary btn-sm';
+          b.onclick = () => {
+            [...btns.children].forEach(c => c.classList.remove('btn-active'));
+            b.classList.add('btn-active');
+            b.dataset.value = valores[key];
+          }
+          btns.appendChild(b);
+        });
+
+        item.appendChild(btns);
+        container.appendChild(item);
+      });
+    });
+
+    function guardarDatos() {
+      alert("https://script.google.com/macros/s/AKfycbx7z9EBEbMecDO0XL50A0hL0KNzCN3n6A5ljZc1CuNMfyybCvuNTIO8ujoGQZ9arZ5OYA/exec");
+    }
+  </script>
+</body>
+</html>
+<!-- Agregado al final del archivo HTML que ya tienes -->
+<script>
+    function recolectarDatosFormulario() {
+      const headerData = {
+        torre: document.getElementById("torre").value,
+        fecha: document.getElementById("fecha").value,
+        revision: document.getElementById("revision").value,
+        empleado: document.getElementById("empleado").value,
+        marca: document.getElementById("marca").value,
+        tipo: document.getElementById("tipo").value,
+        nivel: document.getElementById("nivel").value,
+        serie: document.getElementById("serie").value,
+        color: document.getElementById("color").value,
+        zona: document.getElementById("zona").value,
+        subzona: document.getElementById("subzona").value
+      };
+  
+      const actividades = [];
+      const activityItems = document.querySelectorAll(".activity-item");
+  
+      activityItems.forEach((item, index) => {
+        const label = item.querySelector(".fw-bold").textContent.replace(`${index + 1}. `, "");
+        const selectedButton = item.querySelector(".btn-active");
+        const resultado = selectedButton ? selectedButton.textContent : "No seleccionado";
+        const valor = selectedButton ? selectedButton.dataset.value : "0";
+  
+        actividades.push({
+          actividad: label,
+          resultado: resultado,
+          valor: valor
+        });
+      });
+  
+      return {
+        encabezado: headerData,
+        actividades: actividades,
+        timestamp: new Date().toISOString()
+      };
+    }
+  
+    function guardarAvanceLocal() {
+      const datos = recolectarDatosFormulario();
+      localStorage.setItem("avanceChecklist", JSON.stringify(datos));
+      alert("Avance guardado localmente. Puedes continuar más tarde.");
+    }
+  
+    function cargarAvanceLocal() {
+      const datosGuardados = localStorage.getItem("avanceChecklist");
+      if (datosGuardados) {
+        const datos = JSON.parse(datosGuardados);
+        const h = datos.encabezado;
+        document.getElementById("torre").value = h.torre;
+        document.getElementById("fecha").value = h.fecha;
+        document.getElementById("revision").value = h.revision;
+        document.getElementById("empleado").value = h.empleado;
+        document.getElementById("marca").value = h.marca;
+        document.getElementById("tipo").value = h.tipo;
+        document.getElementById("nivel").value = h.nivel;
+        document.getElementById("serie").value = h.serie;
+        document.getElementById("color").value = h.color;
+        document.getElementById("zona").value = h.zona;
+        document.getElementById("subzona").value = h.subzona;
+  
+        alert("Avance cargado desde el almacenamiento local.");
+      } else {
+        alert("No se encontró ningún avance guardado.");
+      }
+    }
+  
+    function enviarDefinitivo() {
+      const datos = recolectarDatosFormulario();
+  
+      if (!datos.encabezado || !datos.encabezado.revision || datos.actividades.length === 0) {
+        alert("Falta información. Completa todas las subzonas antes de enviar.");
+        return;
+      }
+  
+      // Verificación ejemplo: solo permite enviar al finalizar la 3ª revisión
+      if (datos.encabezado.revision !== "3ª") {
+        alert("Aún no se han realizado las 3 revisiones. Espera a que estén completas.");
+        return;
+      }
+  
+      fetch("https://script.google.com/macros/s/AKfycbwKCL2ZpmDW3fSnRyea_IzmEmd1W6UsGhHSQ_WfvzR_khXq4gKFa-RqiN_lrcUlJTfSlw/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datos)
+      })
+      .then(() => {
+        alert("Checklist enviado con éxito.");
+        localStorage.removeItem("avanceChecklist");
+        limpiarFormulario();
+      })
+      .catch(err => alert("Error al enviar: " + err));
+    }
+  </script>
+  
+  <!-- Agrega estos botones donde están tus botones actuales -->
+  <div class="d-flex gap-2 mb-4">
+    <button class="btn btn-warning" onclick="guardarAvanceLocal()" type="button">Guardar localmente</button>
+    <button class="btn btn-info" onclick="cargarAvanceLocal()" type="button">Cargar avance</button>
+    <button class="btn btn-success" onclick="enviarDefinitivo()" type="button">Enviar a hoja de cálculo</button>
+  </div>
+  
