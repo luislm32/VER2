@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checklist Vehículos Blindados</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 20px;
+    }
+    .header {
+      background-color: #343a40;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .section-title {
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .activity-item {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 10px;
+      background-color: #fff;
+    }
+    .activity-buttons button {
+      margin: 2px;
+    }
+    .btn-active {
+      background-color: #0d6efd !important;
+      color: white !important;
+    }
+    .evaluation-table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    .evaluation-table th, .evaluation-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .evaluation-table th {
+      background-color: #f2f2f2;
+    }
+    .evaluation-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    @media print {
+      body * { visibility: hidden; }
+      #printable, #printable * { visibility: visible; }
+      #printable { position: absolute; top: 0; left: 0; width: 100%; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Checklist de Entrega Final</h1>
+    <h2>Vehículo Blindado</h2>
+  </div>
+
+  <div class="container">
+    <form id="header-form" class="row g-3">
+      <div class="col-md-3"><label>Torre:</label><input type="text" id="torre" class="form-control" required></div>
+      <div class="col-md-3"><label>Fecha:</label><input type="date" id="fecha" class="form-control" required></div>
+      <div class="col-md-3"><label>N° Revisión:</label>
+        <select id="revision" class="form-select" required>
+          <option value="">Seleccionar</option>
+          <option value="1ª">1ª</option>
+          <option value="2ª">2ª</option>
+          <option value="3ª">3ª</option>
+        </select>
+      </div>
+      <div class="col-md-3"><label>Empleado:</label><input type="number" id="empleado" class="form-control" required></div>
+      <div class="col-md-3"><label>Marca:</label><input type="text" id="marca" class="form-control" required></div>
+      <div class="col-md-3"><label>Tipo:</label><input type="text" id="tipo" class="form-control" required></div>
+      <div class="col-md-3"><label>Nivel:</label><input type="text" id="nivel" class="form-control" required></div>
+      <div class="col-md-3"><label>Serie:</label><input type="text" id="serie" class="form-control" required></div>
+      <div class="col-md-3"><label>Color:</label><input type="text" id="color" class="form-control" required></div>
+    </form>
+
+    <div class="section-title">Zona:</div>
+    <div class="mb-3">
+      <select id="zona" class="form-select">
+        <option value="">Seleccionar zona</option>
+        <option value="1">Zona 1</option>
+        <option value="2">Zona 2</option>
+        <option value="3">Zona 3</option>
+        <option value="4">Zona 4</option>
+        <option value="5">Zona 5</option>
+      </select>
+    </div>
+
+    <div id="zona-content" class="mb-5"></div>
+
+    <div class="d-flex gap-2 mb-4 no-print">
+      <button class="btn btn-warning" onclick="guardarParcial()" type="button">Guardado Parcial</button>
+      <button class="btn btn-primary" onclick="guardarFinal()" type="button">Guardado Final</button>
+      <button class="btn btn-secondary" onclick="imprimirFormulario()" type="button">Imprimir</button>
+      <button class="btn btn-danger" onclick="limpiarFormulario()" type="button">Limpiar</button>
+      <button class="btn btn-info" onclick="cargarGuardadoParcial()" type="button">Cargar Guardado</button>
+    </div>
+
+    <div id="printable"></div>
+  </div>
+
+  <script>
+    // Nuevos valores para las actividades
+    const valores = { L1: 3, L2: 5, R1: 3, R2: 5, R3: 5, P2: 5, OK: 0 };
+
+    // Estructura de datos por zona y subzona
+    const actividadesPorZona = {
+      "1": {
+        "EXTERIORES": [
+          "Líneas de carácter en línea",
+          "Puerta correctamente cuadrada y enrasada",
+          "La puerta abre y cierra correctamente (Cierre al primer paso)",
+          "Loderas correctamente instaladas",
+          "El rin se encuentra limpio y libre de daños",
+          "Revisar que la llanta no tenga daños ni objetos incrustados",
+          "Anota la marca de la llanta:",
+          "Salpicadera y cantonera sin daños (pasar la llema de los dedos en los filos)",
+          "Poste 'A' sin daños",
+          "Parabrisas limpio y libre de daños",
+          "Detalles de sika, franjeado y gomas PB bien colocados",
+          "Marco de puerta correctamente alineado vs carrocería",
+          "Cañuela y botaguas bien colocadas y sin daños",
+          "Espejo retrovisor bien colocado sin daños",
+          "Gomas exteriores de ventana en buen estado",
+          "Molduras negras limpias, correctamente colocadas y sin daños (incluye moldura de puerta parte baja)",
+          "Manijas externa / interna sin daño y funciona correctamente"
+        ],
+        "INTERIORES": [
+          "Tablero correctamente instalado",
+          "El tablero se encuentra limpio y sin ningún daño",
+          "Baquela Izq. pared de fuego correctamente instalada",
+          "Baquela Izq. poste A correctamente instalada y sin daños",
+          "Asiento Izq. libre de marcas o rayas",
+          "Cinturón de seguridad Izq. en buen estado y funciona correctamente",
+          "Consola palanca de velocidades sin daños",
+          "Rebajos (estribo) Izq. correctamente instalado y sin daños",
+          "Espejo retrovisor central bien instalado y sin daño",
+          "Tapa de sensor de lluvia bien colocada",
+          "Visera Izq. bien colocada y limpia",
+          "Alfombra piso limpia y sin daños"
+        ]
+      },
+      "2": {
+        "FUNCIONAMIENTO ELÉCTRICO": [
+          "El vehículo enciende adecuadamente",
+          "El elevador Izq. funciona bien",
+          "Encienden todas las luces interiores incluyendo 5ta puerta / guantera / bajo tablero / consola central",
+          "Sin testigos en el tablero",
+          "Funciona el A/C (velocidades)",
+          "Funciona el Sistema de sonido, USB y Tomacorrientes",
+          "Funcionan los limpiadores y chisgueteros (parabrisas / medallón)",
+          "Funciona Asiento Del. Izq.",
+          "Funcionan los seguros eléctricos",
+          "Sensor de lluvia",
+          "Enciende luz interior al abrir la puerta? (correr prueba 4 puertas)",
+          "Funcionan sensores de presencia (facia delantera/trasera)",
+          "Funcionan correctamente los GADGETs del volante?"
+        ]
+      },
+      "3": {
+        "PRUEBA DE CARRETERA": [
+          "Vehículo libre de ruidos por basura y/o objetos extraños",
+          "Vehículo libre de ruidos por colocación de baquela, tapas, etc.",
+          "El vehículo no presenta ruidos por entradas de aire",
+          "Estabilidad y respuesta del vehículo",
+          "Funciona velocímetro y odómetro",
+          "Correcto desempeño en la suspensión?"
+        ]
+      },
+      "4": {
+        "PRUEBA DE AGUA": [
+          "Se encuentra libre de filtraciones de agua en puerta delantera Izq.",
+          "Se encuentra libre de filtraciones de agua en parabrisas",
+          "Se encuentra libre de filtraciones de agua en quemacocos"
+        ]
+      },
+      "5": {
+        "INTERIORES CIELO": [
+          "Se encuentra libre de filtraciones de agua en puerta delantera Izq.",
+          "Se encuentra libre de filtraciones de agua en parabrisas",
+          "Se encuentra libre de filtraciones de agua en quemacocos"
+        ]
+      }
+    };
+
+    // Datos guardados parcialmente
+    let datosParciales = null;
+
+    // Cargar contenido cuando se selecciona una zona
+    document.getElementById('zona').addEventListener('change', function() {
+      const zona = this.value;
+      const container = document.getElementById('zona-content');
+      container.innerHTML = '';
+      
+      if (!zona) return;
+      
+      const subzonas = actividadesPorZona[zona];
+      
+      for (const subzona in subzonas) {
+        const actividades = subzonas[subzona];
+        
+        // Crear tabla para la subzona
+        const table = document.createElement('table');
+        table.className = 'evaluation-table mb-4';
+        
+        // Crear encabezado de la tabla
+        const thead = document.createElement('thead');
+        thead.innerHTML = `
+          <tr>
+            <th colspan="8" class="bg-dark text-white">${subzona}</th>
+          </tr>
+          <tr>
+            <th>Subzona</th>
+            <th>Actividad</th>
+            <th>L1 (3)</th>
+            <th>L2 (5)</th>
+            <th>R1 (3)</th>
+            <th>R2 (5)</th>
+            <th>R3 (5)</th>
+            <th>P2 (5)</th>
+            <th>OK (0)</th>
+          </tr>
+        `;
+        
+        // Crear cuerpo de la tabla
+        const tbody = document.createElement('tbody');
+        
+        actividades.forEach((actividad, index) => {
+          const row = document.createElement('tr');
+          row.dataset.subzona = subzona;
+          row.dataset.actividad = actividad;
+          
+          row.innerHTML = `
+            <td>${subzona}</td>
+            <td>${actividad}</td>
+            <td><button type="button" class="btn btn-sm btn-outline-primary eval-btn" data-value="3" data-type="L1">L1</button></td>
+            <td><button type="button" class="btn btn-sm btn-outline-primary eval-btn" data-value="5" data-type="L2">L2</button></td>
+            <td><button type="button" class="btn btn-sm btn-outline-primary eval-btn" data-value="3" data-type="R1">R1</button></td>
+            <td><button type="button" class="btn btn-sm btn-outline-primary eval-btn" data-value="5" data-type="R2">R2</button></td>
+            <td><button type="button" class="btn btn-sm btn-outline-primary eval-btn" data-value="5" data-type="R3">R3</button></td>
+            <td><button type="button" class="btn btn-sm btn-outline-primary eval-btn" data-value="5" data-type="P2">P2</button></td>
+            <td><button type="button" class="btn btn-sm btn-outline-primary eval-btn" data-value="0" data-type="OK">OK</button></td>
+          `;
+          
+          tbody.appendChild(row);
+        });
+        
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        container.appendChild(table);
+      }
+      
+      // Agregar eventos a los botones de evaluación
+      document.querySelectorAll('.eval-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          // Remover selección previa en la misma fila
+          const row = this.closest('tr');
+          row.querySelectorAll('.eval-btn').forEach(b => b.classList.remove('btn-active'));
+          
+          // Seleccionar el botón actual
+          this.classList.add('btn-active');
+        });
+      });
+    });
+
+    // Guardar datos parcialmente en localStorage
+    function guardarParcial() {
+      const headerData = {
+        torre: document.getElementById("torre").value,
+        fecha: document.getElementById("fecha").value,
+        revision: document.getElementById("revision").value,
+        empleado: document.getElementById("empleado").value,
+        marca: document.getElementById("marca").value,
+        tipo: document.getElementById("tipo").value,
+        nivel: document.getElementById("nivel").value,
+        serie: document.getElementById("serie").value,
+        color: document.getElementById("color").value,
+        zona: document.getElementById("zona").value
+      };
+
+      const actividades = [];
+      const rows = document.querySelectorAll('#zona-content tbody tr');
+      
+      rows.forEach(row => {
+        const selectedButton = row.querySelector('.btn-active');
+        if (selectedButton) {
+          actividades.push({
+            subzona: row.dataset.subzona,
+            actividad: row.dataset.actividad,
+            tipo: selectedButton.dataset.type,
+            valor: selectedButton.dataset.value
+          });
+        }
+      });
+
+      datosParciales = {
+        encabezado: headerData,
+        actividades: actividades,
+        timestamp: new Date().toISOString()
+      };
+
+      localStorage.setItem('checklistParcial', JSON.stringify(datosParciales));
+      alert('Datos guardados parcialmente. Puedes continuar más tarde.');
+    }
+
+    // Cargar datos guardados parcialmente
+    function cargarGuardadoParcial() {
+      const savedData = localStorage.getItem('checklistParcial');
+      if (!savedData) {
+        alert('No hay datos guardados parcialmente.');
+        return;
+      }
+      
+      datosParciales = JSON.parse(savedData);
+      
+      // Llenar encabezado
+      const header = datosParciales.encabezado;
+      document.getElementById("torre").value = header.torre;
+      document.getElementById("fecha").value = header.fecha;
+      document.getElementById("revision").value = header.revision;
+      document.getElementById("empleado").value = header.empleado;
+      document.getElementById("marca").value = header.marca;
+      document.getElementById("tipo").value = header.tipo;
+      document.getElementById("nivel").value = header.nivel;
+      document.getElementById("serie").value = header.serie;
+      document.getElementById("color").value = header.color;
+      document.getElementById("zona").value = header.zona;
+      
+      // Disparar evento change para cargar la zona
+      document.getElementById('zona').dispatchEvent(new Event('change'));
+      
+      // Esperar un momento para que se cargue la zona antes de seleccionar las actividades
+      setTimeout(() => {
+        datosParciales.actividades.forEach(act => {
+          const rows = document.querySelectorAll('#zona-content tbody tr');
+          rows.forEach(row => {
+            if (row.dataset.subzona === act.subzona && row.dataset.actividad === act.actividad) {
+              const buttons = row.querySelectorAll('.eval-btn');
+              buttons.forEach(btn => {
+                if (btn.dataset.type === act.tipo) {
+                  btn.classList.add('btn-active');
+                }
+              });
+            }
+          });
+        });
+        
+        alert('Datos cargados correctamente. Puedes continuar con la evaluación.');
+      }, 500);
+    }
+
+    // Guardar datos finales en Google Sheets
+    function guardarFinal() {
+      const headerData = {
+        torre: document.getElementById("torre").value,
+        fecha: document.getElementById("fecha").value,
+        revision: document.getElementById("revision").value,
+        empleado: document.getElementById("empleado").value,
+        marca: document.getElementById("marca").value,
+        tipo: document.getElementById("tipo").value,
+        nivel: document.getElementById("nivel").value,
+        serie: document.getElementById("serie").value,
+        color: document.getElementById("color").value,
+        zona: document.getElementById("zona").value
+      };
+
+      const actividades = [];
+      const rows = document.querySelectorAll('#zona-content tbody tr');
+      
+      rows.forEach(row => {
+        const selectedButton = row.querySelector('.btn-active');
+        if (selectedButton) {
+          actividades.push({
+            subzona: row.dataset.subzona,
+            actividad: row.dataset.actividad,
+            tipo: selectedButton.dataset.type,
+            valor: selectedButton.dataset.value
+          });
+        } else {
+          // Si no se seleccionó ningún botón, guardar como no evaluado
+          actividades.push({
+            subzona: row.dataset.subzona,
+            actividad: row.dataset.actividad,
+            tipo: "NO_EVALUADO",
+            valor: "0"
+          });
+        }
+      });
+
+      // Preparar datos para enviar a Google Sheets
+      const datosParaEnviar = actividades.map(act => {
+        return {
+          Timestamp: new Date().toISOString(),
+          Torre: headerData.torre,
+          Fecha: headerData.fecha,
+          Revision: headerData.revision,
+          Empleado: headerData.empleado,
+          Marca: headerData.marca,
+          Tipo: headerData.tipo,
+          Nivel: headerData.nivel,
+          Serie: headerData.serie,
+          Color: headerData.color,
+          Zona: headerData.zona,
+          Subzona: act.subzona,
+          Actividad: act.actividad,
+          valorL1: act.tipo === "L1" ? act.valor : "",
+          valorL2: act.tipo === "L2" ? act.valor : "",
+          valorR1: act.tipo === "R1" ? act.valor : "",
+          valorR2: act.tipo === "R2" ? act.valor : "",
+          valorR3: act.tipo === "R3" ? act.valor : "",
+          valorP2: act.tipo === "P2" ? act.valor : "",
+          valorOK: act.tipo === "OK" ? act.valor : ""
+        };
+      });
+
+      // Enviar datos a Google Sheets
+      fetch("https://script.google.com/macros/s/AKfycbwKCL2ZpmDW3fSnRyea_IzmEmd1W6UsGhHSQ_WfvzR_khXq4gKFa-RqiN_lrcUlJTfSlw/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(datosParaEnviar)
+      })
+      .then(response => {
+        console.log("Respuesta del servidor:", response);
+        alert("¡Checklist guardado con éxito en Google Sheets!");
+        limpiarFormulario();
+        localStorage.removeItem('checklistParcial');
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("Ocurrió un error al guardar el checklist: " + error.message);
+      });
+    }
+
+    function limpiarFormulario() {
+      document.getElementById("header-form").reset();
+      document.getElementById("zona").value = "";
+      document.getElementById("zona-content").innerHTML = "";
+    }
+
+    function imprimirFormulario() {
+      const headerFields = [
+        { label: "Torre", value: document.getElementById("torre").value },
+        { label: "Fecha", value: document.getElementById("fecha").value },
+        { label: "Revisión", value: document.getElementById("revision").value },
+        { label: "Empleado", value: document.getElementById("empleado").value },
+        { label: "Marca", value: document.getElementById("marca").value },
+        { label: "Tipo", value: document.getElementById("tipo").value },
+        { label: "Nivel", value: document.getElementById("nivel").value },
+        { label: "Serie", value: document.getElementById("serie").value },
+        { label: "Color", value: document.getElementById("color").value },
+        { label: "Zona", value: document.getElementById("zona").value }
+      ];
+
+      const actividades = [];
+      const rows = document.querySelectorAll('#zona-content tbody tr');
+      
+      rows.forEach(row => {
+        const selectedButton = row.querySelector('.btn-active');
+        actividades.push({
+          subzona: row.dataset.subzona,
+          actividad: row.dataset.actividad,
+          tipo: selectedButton ? selectedButton.dataset.type : "NO_EVALUADO",
+          valor: selectedButton ? selectedButton.dataset.value : "0"
+        });
+      });
+
+      let html = `
+        <html>
+        <head>
+          <title>Checklist Vehículo Blindado</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 30px; }
+            h1 { text-align: center; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+            td, th { padding: 8px; border: 1px solid #ccc; }
+            th { background-color: #f0f0f0; text-align: left; }
+            .respuesta { font-weight: bold; color: #2c3e50; }
+            .footer { margin-top: 30px; font-style: italic; text-align: right; }
+            .subzona-header { background-color: #e0e0e0; font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          <h1>Checklist de Entrega Final - Vehículo Blindado</h1>
+          <table>
+            ${headerFields.map(f => `<tr><th>${f.label}</th><td>${f.value}</td></tr>`).join("")}
+          </table>
+
+          <h2>Evaluación por Subzonas</h2>
+      `;
+
+      // Agrupar actividades por subzona
+      const actividadesPorSubzona = {};
+      actividades.forEach(act => {
+        if (!actividadesPorSubzona[act.subzona]) {
+          actividadesPorSubzona[act.subzona] = [];
+        }
+        actividadesPorSubzona[act.subzona].push(act);
+      });
+
+      // Generar tablas por subzona
+      for (const subzona in actividadesPorSubzona) {
+        html += `
+          <h3>${subzona}</h3>
+          <table>
+            <tr>
+              <th>Actividad</th>
+              <th>Evaluación</th>
+              <th>Puntos</th>
+            </tr>
+        `;
+
+        actividadesPorSubzona[subzona].forEach(act => {
+          html += `
+            <tr>
+              <td>${act.actividad}</td>
+              <td class="respuesta">${act.tipo}</td>
+              <td>${act.valor}</td>
+            </tr>
+          `;
+        });
+
+        // Calcular subtotal por subzona
+        const subtotal = actividadesPorSubzona[subzona].reduce((sum, act) => sum + parseInt(act.valor), 0);
+        html += `
+            <tr>
+              <td colspan="2" class="subzona-header">Subtotal ${subzona}</td>
+              <td class="subzona-header">${subtotal}</td>
+            </tr>
+          </table>
+        `;
+      }
+
+      // Calcular total general
+      const total = actividades.reduce((sum, act) => sum + parseInt(act.valor), 0);
+      html += `
+          <div class="footer">
+            Puntaje total: <strong>${total}</strong>
+          </div>
+        </body>
+        </html>
+      `;
+
+      const ventana = window.open('', '', 'width=1000,height=800');
+      ventana.document.write(html);
+      ventana.document.close();
+      ventana.focus();
+      ventana.print();
+      ventana.close();
+    }
+  </script>
+</body>
+</html>
